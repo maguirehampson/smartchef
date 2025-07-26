@@ -1,0 +1,16 @@
+{
+  "timestamp": "2025-07-26T02:57:38.612Z",
+  "duration": 0.259,
+  "results": {
+    "passed": 8,
+    "failed": 1,
+    "skipped": 5,
+    "errors": [],
+    "warnings": [
+      "API tests skipped - development server not running"
+    ],
+    "summary": {}
+  },
+  "overallSuccess": false,
+  "deploymentReady": false
+}

@@ -1,0 +1,27 @@
+{
+  "name": "smartchef",
+  "version": "1.0.0",
+  "description": "SmartChef AI cooking assistant waitlist landing page with Vercel Analytics integration",
+  "scripts": {
+    "vercel-build": "cd smartchef-waitlist && npm install && npm run build",
+    "build": "cd smartchef-waitlist && npm run build",
+    "dev": "cd smartchef-waitlist && npm run dev",
+    "start": "cd smartchef-waitlist && npm run start",
+    "lint": "cd smartchef-waitlist && npm run lint"
+  },
+  "keywords": [
+    "smartchef",
+    "ai",
+    "cooking",
+    "waitlist",
+    "nextjs",
+    "vercel",
+    "analytics"
+  ],
+  "author": "SmartChef Team",
+  "license": "proprietary",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/maguirehampson/smartchef.git"
+  }
+}

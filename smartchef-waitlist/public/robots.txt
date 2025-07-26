@@ -1,0 +1,14 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://smartchef-waitlist.vercel.app/sitemap.xml
+
+# Crawl-delay for better server performance
+Crawl-delay: 1
+
+# Block access to sensitive files
+Disallow: /api/
+Disallow: /.env*
+Disallow: /node_modules/
+Disallow: /.next/

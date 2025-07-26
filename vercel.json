@@ -2,10 +2,5 @@
   "buildCommand": "cd smartchef-waitlist && npm run build",
   "outputDirectory": "smartchef-waitlist/.next",
   "installCommand": "cd smartchef-waitlist && npm install",
-  "framework": "nextjs",
-  "functions": {
-    "smartchef-waitlist/src/app/api/signup/route.ts": {
-      "runtime": "nodejs18.x"
-    }
-  }
+  "framework": "nextjs"
 } 

@@ -881,7 +881,7 @@ export default function SmartChefLandingPage() {
             >
               <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-6xl font-black mb-8 sm:mb-12 tracking-tight px-2">
                 🍽️ Meals aren&apos;t made with{' '}
-                <span className="line-through text-white/80 decoration-red-500 decoration-2">recipes</span>
+                <span className="line-through text-white font-bold decoration-red-600 decoration-4">recipes</span>
               </h2>
               
               <div className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-gray-300 mb-8 sm:mb-16 space-y-2 sm:space-y-4 font-light">
@@ -938,7 +938,7 @@ export default function SmartChefLandingPage() {
             >
               <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-6xl font-black mb-8 sm:mb-12 tracking-tight px-2">
                 🤯 Old apps treat cooking like a{' '}
-                <span className="line-through text-gray-500">checklist</span>
+                <span className="line-through text-white font-bold decoration-red-600 decoration-4">checklist</span>
               </h2>
               <h3 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-8 sm:mb-16 text-white px-2">
                 We treat it like a <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">moment in your life</span>
@@ -957,9 +957,9 @@ export default function SmartChefLandingPage() {
           </div>
         </section>
 
-        {/* Chat Demo Section */}
+        {/* How It Works - Redesigned with Vertical Steps + Demo Side by Side */}
         <section className="py-16 sm:py-24 lg:py-32 px-4 bg-gradient-to-b from-transparent via-white/5 to-transparent">
-          <div className="max-w-4xl mx-auto">
+          <div className="max-w-7xl mx-auto">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -973,241 +973,264 @@ export default function SmartChefLandingPage() {
               </h2>
             </motion.div>
 
-            {/* Step by Step */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mb-12 sm:mb-16">
-              {[
-                {
-                  step: "\ud83e\uddd0 Step 1",
-                  title: "Tell SmartChef how you're feeling",
-                  description: '"It\'s Sunday, I\'m hungover, I\'ve got $10 and no energy."',
-                  icon: <Brain className="w-6 h-6 sm:w-8 sm:h-8" />
-                },
-                {
-                  step: "🍜 Step 2", 
-                  title: "Get a recipe that fits your real life",
-                  description: "Mood-matching meals. Budget-aware. 15-min max. Zero food guilt.",
-                  icon: <Heart className="w-6 h-6 sm:w-8 sm:h-8" />
-                },
-                {
-                  step: "📦 Step 3",
-                  title: "Grocery list? Sorted. Leftovers? Optimized.",
-                  description: "SmartChef helps you stretch your pantry, not your wallet.",
-                  icon: <Zap className="w-6 h-6 sm:w-8 sm:h-8" />
-                }
-              ].map((item, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, y: 50 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: index * 0.2 }}
-                  viewport={{ once: true }}
-                  className="text-center sm:col-span-2 lg:col-span-1 last:sm:col-start-1 last:sm:col-end-3 last:lg:col-start-auto last:lg:col-end-auto"
-                >
-                  <div className="bg-white/5 border border-white/10 backdrop-blur-xl rounded-3xl p-4 sm:p-6 h-full hover:bg-white/10 transition-all duration-300">
-                    <div className="text-purple-400 mb-4 flex justify-center">
-                      {item.icon}
-                    </div>
-                    <h3 className="text-base sm:text-lg font-bold mb-2 text-purple-400">
-                      {item.step}
-                    </h3>
-                    <h4 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4 text-white leading-tight">
-                      {item.title}
-                    </h4>
-                    <p className="text-sm sm:text-base text-gray-400 leading-relaxed font-light">
-                      {item.description}
-                    </p>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-
-            {/* Enhanced Interactive Chat Demo */}
-            <div className="bg-white/5 border border-white/10 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl">
-              {/* Chat Header */}
-              <div className="bg-gradient-to-r from-purple-500/20 to-pink-500/20 border-b border-white/10 px-4 sm:px-6 py-3 sm:py-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full flex items-center justify-center">
-                    <Brain className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
-                  </div>
-                  <div>
-                    <h3 className="text-white font-semibold text-sm sm:text-base">SmartChef</h3>
-                    <p className="text-purple-300 text-xs sm:text-sm">Your Contextual Culinary Intelligence</p>
-                  </div>
-                  <div className="ml-auto flex items-center gap-1">
-                    <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                    <span className="text-green-400 text-xs font-medium">Online</span>
-                  </div>
-                </div>
-              </div>
+            {/* Side by Side Layout: Vertical Steps + Demo */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
               
-              {/* Chat Messages */}
-              <div className="p-4 sm:p-6 lg:p-8">
-                <div className="space-y-4 sm:space-y-6 h-72 sm:h-80 flex flex-col justify-end overflow-hidden">
-                  {isClient ? (
-                    <AnimatePresence mode="wait">
-                      <motion.div
-                        key={`${currentDemoSet}-${currentMessageIndex}`}
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.3 }}
-                        className="space-y-4 sm:space-y-6"
-                      >
-                        {demoMessageSets[currentDemoSet].slice(0, currentMessageIndex + 1).map((msg, index) => (
-                          <motion.div
-                            key={`${currentDemoSet}-${index}`}
-                            initial={{ opacity: 0, y: 20, scale: 0.95 }}
-                            animate={{ opacity: 1, y: 0, scale: 1 }}
-                            transition={{ 
-                              duration: 0.4, 
-                              delay: index * 0.1,
-                              ease: "easeOut"
-                            }}
-                            className={`flex ${msg.type === 'user' ? 'justify-end' : 'justify-start'}`}
-                          >
-                            <div
-                              className={`max-w-xs sm:max-w-sm px-4 sm:px-6 py-3 sm:py-4 rounded-3xl text-sm sm:text-base lg:text-lg relative ${
-                                msg.type === 'user'
-                                  ? 'bg-gradient-to-r from-purple-500 to-pink-600 text-white font-medium shadow-lg shadow-purple-500/25'
-                                  : 'bg-white/10 text-white border border-white/20 backdrop-blur-sm shadow-lg'
-                              }`}
-                            >
-                              {msg.type === 'bot' && (
-                                <div className="flex items-center gap-2 mb-2">
-                                  <motion.div 
-                                    className="w-5 h-5 sm:w-6 sm:h-6 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full flex items-center justify-center"
-                                    animate={{ 
-                                      scale: [1, 1.1, 1],
-                                      rotate: [0, 5, -5, 0]
-                                    }}
-                                    transition={{ 
-                                      duration: 2,
-                                      repeat: Infinity,
-                                      ease: "easeInOut"
-                                    }}
-                                  >
-                                    <Brain className="w-2 h-2 sm:w-3 sm:h-3 text-white" />
-                                  </motion.div>
-                                  <span className="text-xs sm:text-sm text-purple-400 font-medium">SmartChef</span>
-                                </div>
-                              )}
-                              <motion.div
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                transition={{ duration: 0.5, delay: 0.2 }}
-                              >
-                                {msg.text}
-                              </motion.div>
-                              
-                              {/* Message tail */}
-                              <div className={`absolute top-4 ${
-                                msg.type === 'user' 
-                                  ? 'right-0 translate-x-1/2' 
-                                  : 'left-0 -translate-x-1/2'
-                              }`}>
-                                <div className={`w-3 h-3 rotate-45 ${
-                                  msg.type === 'user'
-                                    ? 'bg-gradient-to-br from-purple-500 to-pink-600'
-                                    : 'bg-white/10 border-l border-t border-white/20'
-                                }`}></div>
-                              </div>
-                            </div>
-                          </motion.div>
-                        ))}
-                        
-                        {/* Typing Indicator */}
-                        {isTyping && (
-                          <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -20 }}
-                            className="flex justify-start"
-                          >
-                            <div className="bg-white/10 border border-white/20 backdrop-blur-sm rounded-3xl px-4 sm:px-6 py-3 sm:py-4 relative">
-                              <div className="flex items-center gap-2 mb-2">
-                                <div className="w-5 h-5 sm:w-6 sm:h-6 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full flex items-center justify-center">
-                                  <Brain className="w-2 h-2 sm:w-3 sm:h-3 text-white" />
-                                </div>
-                                <span className="text-xs sm:text-sm text-purple-400 font-medium">SmartChef</span>
-                              </div>
-                              <div className="flex items-center gap-1">
-                                <div className="flex gap-1">
-                                  {[0, 1, 2].map((i) => (
-                                    <motion.div
-                                      key={i}
-                                      className="w-2 h-2 bg-purple-400 rounded-full"
-                                      animate={{
-                                        scale: [1, 1.2, 1],
-                                        opacity: [0.5, 1, 0.5]
-                                      }}
-                                      transition={{
-                                        duration: 1,
-                                        repeat: Infinity,
-                                        delay: i * 0.2
-                                      }}
-                                    />
-                                  ))}
-                                </div>
-                                <span className="text-gray-400 text-sm ml-2">typing...</span>
-                              </div>
-                              
-                              {/* Typing indicator tail */}
-                              <div className="absolute top-4 left-0 -translate-x-1/2">
-                                <div className="w-3 h-3 rotate-45 bg-white/10 border-l border-t border-white/20"></div>
-                              </div>
-                            </div>
-                          </motion.div>
-                        )}
-                      </motion.div>
-                    </AnimatePresence>
-                  ) : (
-                    <div className="space-y-4 sm:space-y-6">
-                      {demoMessageSets[0].slice(0, 1).map((msg, index) => (
-                        <div
-                          key={index}
-                          className={`flex ${msg.type === 'user' ? 'justify-end' : 'justify-start'}`}
-                        >
-                          <div
-                            className={`max-w-xs sm:max-w-sm px-4 sm:px-6 py-3 sm:py-4 rounded-3xl text-sm sm:text-base lg:text-lg ${
-                              msg.type === 'user'
-                                ? 'bg-gradient-to-r from-purple-500 to-pink-600 text-white font-medium shadow-lg'
-                                : 'bg-white/10 text-white border border-white/20 backdrop-blur-sm'
-                            }`}
-                          >
-                            {msg.type === 'bot' && (
-                              <div className="flex items-center gap-2 mb-2">
-                                <div className="w-5 h-5 sm:w-6 sm:h-6 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full flex items-center justify-center">
-                                  <Brain className="w-2 h-2 sm:w-3 sm:h-3 text-white" />
-                                </div>
-                                <span className="text-xs sm:text-sm text-purple-400 font-medium">SmartChef</span>
-                              </div>
-                            )}
-                            {msg.text}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </div>
-              
-              {/* Chat Input (Visual Only) */}
-              <div className="border-t border-white/10 p-4 sm:p-6">
-                <div className="flex items-center gap-3">
-                  <div className="flex-1 bg-white/5 border border-white/10 rounded-2xl px-4 py-3">
-                    <span className="text-gray-400 text-sm">Try SmartChef yourself...</span>
-                  </div>
-                  <motion.button
-                    className="bg-gradient-to-r from-purple-500 to-pink-600 p-3 rounded-xl shadow-lg"
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
+              {/* Left Side: Vertical Steps */}
+              <div className="space-y-6">
+                {[
+                  {
+                    step: "🧠 Step 1",
+                    title: "Tell SmartChef how you're feeling",
+                    description: '"It\'s Sunday, I\'m hungover, I\'ve got $10 and no energy."',
+                    icon: <Brain className="w-6 h-6 sm:w-8 sm:h-8" />
+                  },
+                  {
+                    step: "🍜 Step 2", 
+                    title: "Get a recipe that fits your real life",
+                    description: "Mood-matching meals. Budget-aware. 15-min max. Zero food guilt.",
+                    icon: <Heart className="w-6 h-6 sm:w-8 sm:h-8" />
+                  },
+                  {
+                    step: "📦 Step 3",
+                    title: "Grocery list? Sorted. Leftovers? Optimized.",
+                    description: "SmartChef helps you stretch your pantry, not your wallet.",
+                    icon: <Zap className="w-6 h-6 sm:w-8 sm:h-8" />
+                  }
+                ].map((item, index) => (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, x: -50 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.6, delay: index * 0.2 }}
+                    viewport={{ once: true }}
+                    className="relative"
                   >
-                    <ArrowRight className="w-5 h-5 text-white" />
-                  </motion.button>
-                </div>
+                    <div className="bg-white/5 border border-white/10 backdrop-blur-xl rounded-3xl p-6 hover:bg-white/10 transition-all duration-300 hover:scale-105">
+                      <div className="flex items-start gap-4">
+                        <div className="text-purple-400 shrink-0 mt-1">
+                          {item.icon}
+                        </div>
+                        <div className="flex-1">
+                          <h3 className="text-lg font-bold mb-2 text-purple-400">
+                            {item.step}
+                          </h3>
+                          <h4 className="text-xl font-semibold mb-3 text-white leading-tight">
+                            {item.title}
+                          </h4>
+                          <p className="text-base text-gray-400 leading-relaxed font-light">
+                            {item.description}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Connecting Line */}
+                    {index < 2 && (
+                      <div className="absolute left-8 top-full w-0.5 h-6 bg-gradient-to-b from-purple-400 to-transparent opacity-50"></div>
+                    )}
+                  </motion.div>
+                ))}
               </div>
+
+              {/* Right Side: Interactive Demo */}
+              <motion.div
+                initial={{ opacity: 0, x: 50 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.6, delay: 0.3 }}
+                viewport={{ once: true }}
+                className="lg:sticky lg:top-8"
+              >
+                {/* Enhanced Interactive Chat Demo */}
+                <div className="bg-white/5 border border-white/10 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl">
+                  {/* Chat Header */}
+                  <div className="bg-gradient-to-r from-purple-500/20 to-pink-500/20 border-b border-white/10 px-4 sm:px-6 py-3 sm:py-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full flex items-center justify-center">
+                        <Brain className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+                      </div>
+                      <div>
+                        <h3 className="text-white font-semibold text-sm sm:text-base">SmartChef</h3>
+                        <p className="text-purple-300 text-xs sm:text-sm">Your Contextual Culinary Intelligence</p>
+                      </div>
+                      <div className="ml-auto flex items-center gap-1">
+                        <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                        <span className="text-green-400 text-xs font-medium">Online</span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Chat Messages */}
+                  <div className="p-4 sm:p-6 lg:p-8">
+                    <div className="space-y-4 sm:space-y-6 h-72 sm:h-80 flex flex-col justify-end overflow-hidden">
+                      {isClient ? (
+                        <AnimatePresence mode="wait">
+                          <motion.div
+                            key={`${currentDemoSet}-${currentMessageIndex}`}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.3 }}
+                            className="space-y-4 sm:space-y-6"
+                          >
+                            {demoMessageSets[currentDemoSet].slice(0, currentMessageIndex + 1).map((msg, index) => (
+                              <motion.div
+                                key={`${currentDemoSet}-${index}`}
+                                initial={{ opacity: 0, y: 20, scale: 0.95 }}
+                                animate={{ opacity: 1, y: 0, scale: 1 }}
+                                transition={{ 
+                                  duration: 0.4, 
+                                  delay: index * 0.1,
+                                  ease: "easeOut"
+                                }}
+                                className={`flex ${msg.type === 'user' ? 'justify-end' : 'justify-start'}`}
+                              >
+                                <div
+                                  className={`max-w-xs sm:max-w-sm px-4 sm:px-6 py-3 sm:py-4 rounded-3xl text-sm sm:text-base lg:text-lg relative ${
+                                    msg.type === 'user'
+                                      ? 'bg-gradient-to-r from-purple-500 to-pink-600 text-white font-medium shadow-lg shadow-purple-500/25'
+                                      : 'bg-white/10 text-white border border-white/20 backdrop-blur-sm shadow-lg'
+                                  }`}
+                                >
+                                  {msg.type === 'bot' && (
+                                    <div className="flex items-center gap-2 mb-2">
+                                      <motion.div 
+                                        className="w-5 h-5 sm:w-6 sm:h-6 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full flex items-center justify-center"
+                                        animate={{ 
+                                          scale: [1, 1.1, 1],
+                                          rotate: [0, 5, -5, 0]
+                                        }}
+                                        transition={{ 
+                                          duration: 2,
+                                          repeat: Infinity,
+                                          ease: "easeInOut"
+                                        }}
+                                      >
+                                        <Brain className="w-2 h-2 sm:w-3 sm:h-3 text-white" />
+                                      </motion.div>
+                                      <span className="text-xs sm:text-sm text-purple-400 font-medium">SmartChef</span>
+                                    </div>
+                                  )}
+                                  <motion.div
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    transition={{ duration: 0.5, delay: 0.2 }}
+                                  >
+                                    {msg.text}
+                                  </motion.div>
+                                  
+                                  {/* Message tail */}
+                                  <div className={`absolute top-4 ${
+                                    msg.type === 'user' 
+                                      ? 'right-0 translate-x-1/2' 
+                                      : 'left-0 -translate-x-1/2'
+                                  }`}>
+                                    <div className={`w-3 h-3 rotate-45 ${
+                                      msg.type === 'user'
+                                        ? 'bg-gradient-to-br from-purple-500 to-pink-600'
+                                        : 'bg-white/10 border-l border-t border-white/20'
+                                    }`}></div>
+                                  </div>
+                                </div>
+                              </motion.div>
+                            ))}
+                            
+                            {/* Typing Indicator */}
+                            {isTyping && (
+                              <motion.div
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -20 }}
+                                className="flex justify-start"
+                              >
+                                <div className="bg-white/10 border border-white/20 backdrop-blur-sm rounded-3xl px-4 sm:px-6 py-3 sm:py-4 relative">
+                                  <div className="flex items-center gap-2 mb-2">
+                                    <div className="w-5 h-5 sm:w-6 sm:h-6 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full flex items-center justify-center">
+                                      <Brain className="w-2 h-2 sm:w-3 sm:h-3 text-white" />
+                                    </div>
+                                    <span className="text-xs sm:text-sm text-purple-400 font-medium">SmartChef</span>
+                                  </div>
+                                  <div className="flex items-center gap-1">
+                                    <div className="flex gap-1">
+                                      {[0, 1, 2].map((i) => (
+                                        <motion.div
+                                          key={i}
+                                          className="w-2 h-2 bg-purple-400 rounded-full"
+                                          animate={{
+                                            scale: [1, 1.2, 1],
+                                            opacity: [0.5, 1, 0.5]
+                                          }}
+                                          transition={{
+                                            duration: 1,
+                                            repeat: Infinity,
+                                            delay: i * 0.2
+                                          }}
+                                        />
+                                      ))}
+                                    </div>
+                                    <span className="text-gray-400 text-sm ml-2">typing...</span>
+                                  </div>
+                                  
+                                  {/* Typing indicator tail */}
+                                  <div className="absolute top-4 left-0 -translate-x-1/2">
+                                    <div className="w-3 h-3 rotate-45 bg-white/10 border-l border-t border-white/20"></div>
+                                  </div>
+                                </div>
+                              </motion.div>
+                            )}
+                          </motion.div>
+                        </AnimatePresence>
+                      ) : (
+                        <div className="space-y-4 sm:space-y-6">
+                          {demoMessageSets[0].slice(0, 1).map((msg, index) => (
+                            <div
+                              key={index}
+                              className={`flex ${msg.type === 'user' ? 'justify-end' : 'justify-start'}`}
+                            >
+                              <div
+                                className={`max-w-xs sm:max-w-sm px-4 sm:px-6 py-3 sm:py-4 rounded-3xl text-sm sm:text-base lg:text-lg ${
+                                  msg.type === 'user'
+                                    ? 'bg-gradient-to-r from-purple-500 to-pink-600 text-white font-medium shadow-lg'
+                                    : 'bg-white/10 text-white border border-white/20 backdrop-blur-sm'
+                                }`}
+                              >
+                                {msg.type === 'bot' && (
+                                  <div className="flex items-center gap-2 mb-2">
+                                    <div className="w-5 h-5 sm:w-6 sm:h-6 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full flex items-center justify-center">
+                                      <Brain className="w-2 h-2 sm:w-3 sm:h-3 text-white" />
+                                    </div>
+                                    <span className="text-xs sm:text-sm text-purple-400 font-medium">SmartChef</span>
+                                  </div>
+                                )}
+                                {msg.text}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  
+                  {/* Chat Input (Visual Only) */}
+                  <div className="border-t border-white/10 p-4 sm:p-6">
+                    <div className="flex items-center gap-3">
+                      <div className="flex-1 bg-white/5 border border-white/10 rounded-2xl px-4 py-3">
+                        <span className="text-gray-400 text-sm">Try SmartChef yourself...</span>
+                      </div>
+                      <motion.button
+                        className="bg-gradient-to-r from-purple-500 to-pink-600 p-3 rounded-xl shadow-lg"
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                      >
+                        <ArrowRight className="w-5 h-5 text-white" />
+                      </motion.button>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
             </div>
           </div>
+
         </section>
 
         {/* Emotional Intelligence */}

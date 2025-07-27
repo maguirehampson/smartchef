@@ -881,7 +881,7 @@ export default function SmartChefLandingPage() {
             >
               <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-6xl font-black mb-8 sm:mb-12 tracking-tight px-2">
                 🍽️ Meals aren&apos;t made with{' '}
-                <span className="line-through text-gray-500">recipes</span>
+                <span className="line-through text-white/80 decoration-red-500 decoration-2">recipes</span>
               </h2>
               
               <div className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-gray-300 mb-8 sm:mb-16 space-y-2 sm:space-y-4 font-light">

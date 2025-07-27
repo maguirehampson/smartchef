@@ -1,5 +1,37 @@
 <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect width="32" height="32" rx="8" fill="#7c3aed"/>
-  <path d="M16 6C17.1 6 18 6.9 18 8C18 9.1 17.1 10 16 10C14.9 10 14 9.1 14 8C14 6.9 14.9 6 16 6ZM25 13V11L19 11.5V13M11.5 12C11.5 12 11.5 12 11.5 12C10.1 12 9 13.1 9 14.5S10.1 17 11.5 17C12.9 17 14 15.9 14 14.5S12.9 12 11.5 12ZM20.5 12C19.1 12 18 13.1 18 14.5S19.1 17 20.5 17C21.9 17 23 15.9 23 14.5S21.9 12 20.5 12Z" 
-        fill="white" stroke="white" stroke-width="1"/>
+  <!-- Background gradient -->
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#7c3aed;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ec4899;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="chef-hat" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f3f4f6;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="32" height="32" rx="8" fill="url(#bg)"/>
+  
+  <!-- Chef's hat -->
+  <path d="M16 4C18.5 4 20.5 6 20.5 8.5C20.5 9.2 20.3 9.8 20 10.3C21.7 10.8 23 12.4 23 14.3V16C23 16.6 22.6 17 22 17H10C9.4 17 9 16.6 9 16V14.3C9 12.4 10.3 10.8 12 10.3C11.7 9.8 11.5 9.2 11.5 8.5C11.5 6 13.5 4 16 4Z" 
+        fill="url(#chef-hat)" stroke="#e5e7eb" stroke-width="0.5"/>
+  
+  <!-- Chef's hat band -->
+  <rect x="9" y="16" width="14" height="3" rx="1.5" fill="url(#chef-hat)" stroke="#e5e7eb" stroke-width="0.5"/>
+  
+  <!-- Brain/AI symbol inside hat -->
+  <path d="M14.5 8C14.5 7.2 15.2 6.5 16 6.5C16.8 6.5 17.5 7.2 17.5 8C17.5 8.3 17.4 8.5 17.2 8.7C17.6 8.9 17.8 9.3 17.8 9.8C17.8 10.5 17.3 11 16.6 11H15.4C14.7 11 14.2 10.5 14.2 9.8C14.2 9.3 14.4 8.9 14.8 8.7C14.6 8.5 14.5 8.3 14.5 8Z" 
+        fill="#7c3aed" opacity="0.8"/>
+  
+  <!-- Small sparkle for AI magic -->
+  <circle cx="19" cy="7" r="1" fill="#fbbf24" opacity="0.9"/>
+  <path d="M19 6L19 8M18 7L20 7" stroke="#fbbf24" stroke-width="0.5" opacity="0.9"/>
+  
+  <!-- Utensils -->
+  <path d="M6 20L6 28M6 20C5.5 20 5 20.5 5 21V22C5 22.5 5.5 23 6 23C6.5 23 7 22.5 7 22V21C7 20.5 6.5 20 6 20Z" 
+        stroke="white" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+  <path d="M26 20V28M24 20V24M28 20V24M26 24V28" 
+        stroke="white" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
 </svg>

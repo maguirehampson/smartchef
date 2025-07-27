@@ -977,9 +977,9 @@ export default function SmartChefLandingPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mb-12 sm:mb-16">
               {[
                 {
-                  step: "🧠 Step 1",
-                  title: "Tell SmartChef how you&apos;re feeling",
-                  description: "&quot;It&apos;s Sunday, I&apos;m hungover, I&apos;ve got $10 and no energy.&quot;",
+                  step: "\ud83e\uddd0 Step 1",
+                  title: "Tell SmartChef how you're feeling",
+                  description: '"It\'s Sunday, I\'m hungover, I\'ve got $10 and no energy."',
                   icon: <Brain className="w-6 h-6 sm:w-8 sm:h-8" />
                 },
                 {

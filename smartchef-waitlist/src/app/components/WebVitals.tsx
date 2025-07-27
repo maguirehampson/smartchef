@@ -18,7 +18,6 @@
 'use client';
 
 import { useEffect } from 'react';
-import { trackWebVital } from '../../lib/analytics';
 
 /**
  * Web Vitals metric interface
@@ -45,14 +44,25 @@ const WebVitals: React.FC = () => {
     // Dynamic import to avoid loading in development
     import('web-vitals').then(({ onCLS, onINP, onFCP, onLCP, onTTFB }) => {
       const reportMetric = (metric: WebVitalMetric) => {
-        // Report to unified analytics (Vercel Analytics + Splitbee)
-        trackWebVital({
-          metric_name: metric.name,
-          metric_value: metric.value,
-          metric_rating: metric.rating,
-          metric_id: metric.id,
-          metric_delta: metric.delta,
-        });
+        // Report to Splitbee Analytics if available
+        if (typeof window !== 'undefined' && window.splitbee) {
+          window.splitbee.track('web_vital', {
+            metric_name: metric.name,
+            metric_value: metric.value,
+            metric_rating: metric.rating,
+            metric_id: metric.id,
+            metric_delta: metric.delta,
+          });
+        }
+        
+        // Also log to console in development for debugging
+        if (process.env.NODE_ENV === 'development') {
+          console.log(`[Web Vitals] ${metric.name}:`, {
+            value: metric.value,
+            rating: metric.rating,
+            delta: metric.delta,
+          });
+        }
       };
       
       // Track all Core Web Vitals (using updated API)

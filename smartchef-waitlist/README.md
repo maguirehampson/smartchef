@@ -7,7 +7,7 @@ A high-converting, production-ready Next.js landing page for the SmartChef AI co
 - **Responsive Design**: Optimized for mobile, tablet, and desktop devices
 - **Interactive Animations**: Smooth Framer Motion animations and transitions
 - **Email Capture**: MailerLite API integration for waitlist management
-- **Analytics Tracking**: Splitbee integration for conversion analysis
+- **Analytics Tracking**: Comprehensive analytics with Vercel Analytics, Speed Insights, and Splitbee
 - **Performance Optimized**: <1.5s load time on 4G connections
 - **SEO Optimized**: Complete meta tags, Open Graph, and Twitter Cards
 - **TypeScript**: Full type safety throughout the application
@@ -20,7 +20,7 @@ A high-converting, production-ready Next.js landing page for the SmartChef AI co
 - **Styling**: Tailwind CSS 4.x with custom design system
 - **Animations**: Framer Motion 12.x
 - **Icons**: Lucide React
-- **Analytics**: Vercel Analytics + Splitbee
+- **Analytics**: Triple analytics setup (Vercel Analytics + Speed Insights + Splitbee)
 - **Email Service**: MailerLite API
 - **Deployment**: Vercel (optimized)
 

@@ -8,12 +8,12 @@
  * Key Features:
  * - SEO-optimized metadata with Open Graph and Twitter Cards
  * - Google Fonts integration (Geist Sans and Geist Mono)
- * - Splitbee analytics script integration
+ * - Multi-analytics integration (Splitbee + Vercel Analytics + Speed Insights)
  * - Global CSS imports and styling
  * - Accessibility and performance optimizations
  * 
  * Requirements covered:
- * - 3.4: Splitbee analytics script inclusion in page head
+ * - 3.4: Multi-analytics integration (Splitbee + Vercel Analytics + Speed Insights)
  * - 6.4: Proper meta tags for SEO and social sharing
  * - 6.5: Open Graph and Twitter Card configurations
  * - 5.1: Next.js project structure and configuration
@@ -26,6 +26,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Script from 'next/script';
 import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 import WebVitals from './components/WebVitals';
 import "./globals.css";
 
@@ -297,6 +298,9 @@ export default function RootLayout({
         
         {/* Vercel Analytics Integration */}
         <Analytics />
+        
+        {/* Vercel Speed Insights Integration */}
+        <SpeedInsights />
       </body>
     </html>
   );

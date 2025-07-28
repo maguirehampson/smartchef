@@ -35,19 +35,19 @@ interface Testimonial {
  */
 const testimonials: Testimonial[] = [
   {
-    name: "Sarah Chen",
+    name: "Anonymous User",
     role: "Busy Parent",
     content: "Finally, an AI that gets that I need dinner ideas for cranky kids after a 12-hour workday, not gourmet recipes I'll never make.",
     rating: 5
   },
   {
-    name: "Marcus Rodriguez",
+    name: "Anonymous User",
     role: "College Student",
     content: "SmartChef actually understands my $15 weekly grocery budget and my dorm kitchen limitations. Game changer.",
     rating: 5
   },
   {
-    name: "Emma Thompson",
+    name: "Anonymous User",
     role: "Working Professional",
     content: "It's like having a friend who actually knows what you want to eat when you're too tired to think. Revolutionary.",
     rating: 5

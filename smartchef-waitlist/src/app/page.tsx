@@ -893,7 +893,7 @@ export default function SmartChefLandingPage() {
                   { text: "Friday night moods", icon: "🎉", color: "from-purple-500 to-pink-500" },
                   { text: "$14 in your bank account", icon: "💸", color: "from-red-500 to-orange-500" },
                   { text: "that weird leftover rice", icon: "🍚", color: "from-yellow-500 to-orange-500" },
-                  { text: "a craving you can&apos;t quite name", icon: "🤔", color: "from-blue-500 to-purple-500" }
+                  { text: "a craving you can't quite name", icon: "🤔", color: "from-blue-500 to-purple-500" }
                 ].map((item, index) => (
                   <motion.div
                     key={index}
@@ -919,7 +919,7 @@ export default function SmartChefLandingPage() {
 
               <div className="bg-white/5 border border-white/10 backdrop-blur-xl rounded-3xl p-6 sm:p-8 mb-8 sm:mb-12">
                 <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-white font-light leading-relaxed">
-                  SmartChef is your <span className="font-semibold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">Contextual Culinary Intelligence</span> copilot —<br className="hidden sm:block" />
+                  SmartChef is your <span className="font-semibold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">Contextual Culinary Intelligence</span> copilot -<br className="hidden sm:block" />
                   a personalized cooking experience that knows your <em className="text-purple-400">vibe</em>, not just your ingredients.
                 </p>
               </div>
@@ -946,11 +946,11 @@ export default function SmartChefLandingPage() {
 
               <div className="bg-white/5 border border-white/10 backdrop-blur-xl rounded-3xl p-6 sm:p-8 lg:p-12 mb-8 sm:mb-16">
                 <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-gray-300 mb-6 sm:mb-8 font-light leading-relaxed">
-                  &quot;What should I eat?&quot; isn&apos;t a recipe question —<br className="hidden sm:block" />
+                  &quot;What should I eat?&quot; isn&apos;t a recipe question -<br className="hidden sm:block" />
                   it&apos;s a question about <span className="text-purple-400 font-medium">mood</span>, <span className="text-pink-400 font-medium">motivation</span>, <span className="text-orange-400 font-medium">money</span>, and <span className="text-blue-400 font-medium">meaning</span>.
                 </p>
                 <p className="text-base sm:text-lg md:text-xl text-white font-medium">
-                  SmartChef looks at your context — not just your fridge — and serves up food that actually fits your day.
+                  SmartChef looks at your context - not just your fridge - and serves up food that actually fits your day.
                 </p>
               </div>
             </motion.div>
@@ -1246,7 +1246,7 @@ export default function SmartChefLandingPage() {
                 💡 This isn&apos;t just cooking.
               </h2>
               <h3 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-8 sm:mb-16 px-2">
-                It&apos;s <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">emotional intelligence</span> — served hot.
+                It&apos;s <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">emotional intelligence</span> - served hot.
               </h3>
 
               <div className="bg-white/5 border border-white/10 backdrop-blur-xl rounded-3xl p-6 sm:p-8 mb-8 sm:mb-16">
@@ -1275,7 +1275,7 @@ export default function SmartChefLandingPage() {
 
               <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-white font-light leading-relaxed px-2">
                 We&apos;re not here to tell you what&apos;s &quot;healthy.&quot;<br />
-                We&apos;re here to help you <span className="font-semibold text-purple-400">feel good</span> about what you eat — every day.
+                We&apos;re here to help you <span className="font-semibold text-purple-400">feel good</span> about what you eat - every day.
               </p>
             </motion.div>
           </div>
@@ -1305,7 +1305,7 @@ export default function SmartChefLandingPage() {
 
               <div className="bg-white/5 border border-white/10 backdrop-blur-xl rounded-3xl p-6 sm:p-8 mb-8 sm:mb-12">
                 <p className="text-base sm:text-lg md:text-xl text-white mb-4 sm:mb-6 leading-relaxed">
-                  We&apos;re inviting <span className="font-bold text-pink-400">100 early users</span> to let SmartChef decide their meals for a full month —<br className="hidden sm:block" />
+                  We&apos;re inviting <span className="font-bold text-pink-400">100 early users</span> to let SmartChef decide their meals for a full month -<br className="hidden sm:block" />
                   based on mood, schedule, budget, and vibe.
                 </p>
                 <p className="text-sm sm:text-base md:text-lg text-gray-300 font-light">

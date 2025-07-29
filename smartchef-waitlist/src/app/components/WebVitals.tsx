@@ -1,84 +1,150 @@
 /**
  * Web Vitals Performance Monitoring Component
  * 
- * This component tracks Core Web Vitals metrics and reports them
- * to analytics for performance monitoring and optimization.
+ * This component tracks Core Web Vitals metrics and sends them to analytics
+ * platforms for performance monitoring and optimization.
  * 
- * Metrics tracked:
- * - Largest Contentful Paint (LCP)
- * - Interaction to Next Paint (INP)
- * - Cumulative Layout Shift (CLS)
- * - First Contentful Paint (FCP)
- * - Time to First Byte (TTFB)
- * 
- * @author SmartChef Team
- * @version 1.0.0
+ * Features:
+ * - Tracks LCP, FID, CLS, FCP, and TTFB metrics
+ * - Sends data to Vercel Analytics and Splitbee
+ * - Provides performance insights for optimization
+ * - Development mode logging for debugging
  */
 
 'use client';
 
 import { useEffect } from 'react';
+import { onCLS, onINP, onFCP, onLCP, onTTFB } from 'web-vitals';
+import { trackWebVital } from '../../lib/analytics';
+import { createLogger } from '../../lib/logger';
+
+// Create logger for this module
+const logger = createLogger('WebVitals');
 
 /**
- * Web Vitals metric interface
+ * Get performance rating based on metric value and thresholds
+ * @param value - Metric value
+ * @param thresholds - Good and poor thresholds
+ * @returns Performance rating
  */
-interface WebVitalMetric {
-  name: string;
-  value: number;
-  id: string;
-  delta: number;
-  rating: 'good' | 'needs-improvement' | 'poor';
+function getRating(
+  value: number, 
+  thresholds: { good: number; poor: number }
+): 'good' | 'needs-improvement' | 'poor' {
+  if (value <= thresholds.good) return 'good';
+  if (value <= thresholds.poor) return 'needs-improvement';
+  return 'poor';
 }
 
 /**
- * Web Vitals Performance Monitor
- * 
- * Tracks and reports Core Web Vitals metrics to analytics
- * for performance monitoring and optimization insights.
+ * Web Vitals metric thresholds
  */
-const WebVitals: React.FC = () => {
-  useEffect(() => {
-    // Only run in production and when analytics is available
-    if (process.env.NODE_ENV !== 'production') return;
-    
-    // Dynamic import to avoid loading in development
-    import('web-vitals').then(({ onCLS, onINP, onFCP, onLCP, onTTFB }) => {
-      const reportMetric = (metric: WebVitalMetric) => {
-        // Report to Splitbee Analytics if available
-        if (typeof window !== 'undefined' && window.splitbee) {
-          window.splitbee.track('web_vital', {
-            metric_name: metric.name,
-            metric_value: metric.value,
-            metric_rating: metric.rating,
-            metric_id: metric.id,
-            metric_delta: metric.delta,
-          });
-        }
-        
-        // Also log to console in development for debugging
-        if (process.env.NODE_ENV === 'development') {
-          console.log(`[Web Vitals] ${metric.name}:`, {
-            value: metric.value,
-            rating: metric.rating,
-            delta: metric.delta,
-          });
-        }
-      };
-      
-      // Track all Core Web Vitals (using updated API)
-      onCLS(reportMetric);  // Cumulative Layout Shift
-      onINP(reportMetric);  // Interaction to Next Paint (replaces FID)
-      onFCP(reportMetric);  // First Contentful Paint
-      onLCP(reportMetric);  // Largest Contentful Paint
-      onTTFB(reportMetric); // Time to First Byte
-    }).catch((error) => {
-      // Silently fail if web-vitals library is not available
-      console.warn('Web Vitals tracking failed:', error);
-    });
-  }, []);
-  
-  // This component doesn't render anything
-  return null;
+const THRESHOLDS = {
+  LCP: { good: 2500, poor: 4000 },
+  INP: { good: 200, poor: 500 },
+  CLS: { good: 0.1, poor: 0.25 },
+  FCP: { good: 1800, poor: 3000 },
+  TTFB: { good: 800, poor: 1800 },
 };
 
-export default WebVitals;
+/**
+ * Web Vitals component for performance monitoring
+ */
+export default function WebVitals() {
+  useEffect(() => {
+    // Track Largest Contentful Paint (LCP)
+    onLCP((metric) => {
+      try {
+        const rating = getRating(metric.value, THRESHOLDS.LCP);
+        
+        trackWebVital('LCP', metric.value, rating);
+        
+        logger.info('LCP tracked', {
+          value: metric.value,
+          rating,
+          id: metric.id,
+          delta: metric.delta
+        });
+      } catch (error) {
+        logger.error('Failed to track LCP', error);
+      }
+    });
+
+    // Track Interaction to Next Paint (INP) - replaces FID
+    onINP((metric) => {
+      try {
+        const rating = getRating(metric.value, THRESHOLDS.INP);
+        
+        trackWebVital('INP', metric.value, rating);
+        
+        logger.info('INP tracked', {
+          value: metric.value,
+          rating,
+          id: metric.id,
+          delta: metric.delta
+        });
+      } catch (error) {
+        logger.error('Failed to track INP', error);
+      }
+    });
+
+    // Track Cumulative Layout Shift (CLS)
+    onCLS((metric) => {
+      try {
+        const rating = getRating(metric.value, THRESHOLDS.CLS);
+        
+        trackWebVital('CLS', metric.value, rating);
+        
+        logger.info('CLS tracked', {
+          value: metric.value,
+          rating,
+          id: metric.id,
+          delta: metric.delta
+        });
+      } catch (error) {
+        logger.error('Failed to track CLS', error);
+      }
+    });
+
+    // Track First Contentful Paint (FCP)
+    onFCP((metric) => {
+      try {
+        const rating = getRating(metric.value, THRESHOLDS.FCP);
+        
+        trackWebVital('FCP', metric.value, rating);
+        
+        logger.info('FCP tracked', {
+          value: metric.value,
+          rating,
+          id: metric.id,
+          delta: metric.delta
+        });
+      } catch (error) {
+        logger.error('Failed to track FCP', error);
+      }
+    });
+
+    // Track Time to First Byte (TTFB)
+    onTTFB((metric) => {
+      try {
+        const rating = getRating(metric.value, THRESHOLDS.TTFB);
+        
+        trackWebVital('TTFB', metric.value, rating);
+        
+        logger.info('TTFB tracked', {
+          value: metric.value,
+          rating,
+          id: metric.id,
+          delta: metric.delta
+        });
+      } catch (error) {
+        logger.error('Failed to track TTFB', error);
+      }
+    });
+
+    logger.info('Web Vitals monitoring initialized');
+  }, []);
+
+  // This component doesn't render anything
+  return null;
+}

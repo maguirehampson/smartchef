@@ -123,11 +123,11 @@ export const metadata: Metadata = {
     siteName: 'SmartChef',
     images: [
       {
-        url: '/og-image.svg',
-        width: 1200,
-        height: 630,
-        alt: 'SmartChef - Contextual Culinary Intelligence',
-        type: 'image/svg+xml',
+        url: '/savr-logo.png',
+        width: 908,
+        height: 640,
+        alt: 'Savr - AI That Gets Why You Eat',
+        type: 'image/png',
       },
     ],
     locale: 'en_US',
@@ -140,7 +140,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: "Savr - AI That Gets Why You Eat",
     description: "The first AI cooking assistant that understands your mood, budget, and cravings. Join the waitlist for contextual culinary intelligence.",
-    images: ['/og-image.svg'],
+    images: ['/savr-logo.png'],
     creator: '@savr',
     site: '@savr',
   },
@@ -220,12 +220,12 @@ export default function RootLayout({
         
         {/* Preload critical resources */}
         <link rel="preload" href="/style.css" as="style" />
-        <link rel="preload" href="/og-image.svg" as="image" type="image/svg+xml" />
+        <link rel="preload" href="/savr-logo.png" as="image" type="image/png" />
         
         {/* Favicon and app icons for better branding */}
-        <link rel="icon" href="/favicon.ico" sizes="any" />
-        <link rel="icon" href="/icon.svg" type="image/svg+xml" />
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+        <link rel="icon" href="/favicon.png" sizes="any" />
+        <link rel="icon" href="/savr-logo.png" type="image/png" />
+        <link rel="apple-touch-icon" href="/savr-logo.png" />
         <link rel="manifest" href="/manifest.json" />
         
         {/* Performance hint: Prefetch likely next page */}

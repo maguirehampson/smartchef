@@ -34,23 +34,43 @@ const ERROR_MESSAGES = {
 };
 
 /**
- * Validates email format using regex pattern
+ * RFC 5322 compliant email validation with security checks
  * @param {string} email - Email address to validate
  * @returns {boolean} - True if email is valid format
  */
 function validateEmailFormat(email) {
-  const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return EMAIL_REGEX.test(email) && email.length <= 254;
+  // RFC 5322 compliant email regex with additional security checks
+  const EMAIL_REGEX = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+  
+  // Additional security checks
+  if (!email || typeof email !== 'string') return false;
+  if (email.length > 254) return false;
+  if (email.includes('..')) return false; // Prevent directory traversal
+  if (email.includes('javascript:')) return false; // Prevent XSS
+  if (email.includes('<script>')) return false; // Prevent XSS
+  
+  return EMAIL_REGEX.test(email);
 }
 
 /**
- * Sanitizes input data to prevent XSS and other security issues
+ * Enhanced input sanitization to prevent XSS and injection attacks
  * @param {string} input - Input string to sanitize
  * @returns {string} - Sanitized input
  */
 function sanitizeInput(input) {
   if (typeof input !== 'string') return '';
-  return input.trim().replace(/[<>]/g, '');
+  
+  // Remove potentially dangerous characters and patterns
+  return input
+    .trim()
+    .replace(/[<>]/g, '') // Remove angle brackets
+    .replace(/javascript:/gi, '') // Remove javascript: protocol
+    .replace(/data:/gi, '') // Remove data: protocol
+    .replace(/vbscript:/gi, '') // Remove vbscript: protocol
+    .replace(/on\w+=/gi, '') // Remove event handlers
+    .replace(/<script/gi, '') // Remove script tags
+    .replace(/<\/script/gi, '') // Remove closing script tags
+    .substring(0, 100); // Limit length
 }
 
 /**
@@ -70,281 +90,251 @@ function getConfig() {
 }
 
 /**
- * Tracks analytics events via Splitbee
+ * Tracks analytics events with error handling
  * @param {string} eventName - Name of the event to track
- * @param {Object} properties - Additional event properties
+ * @param {Object} properties - Event properties
  */
-function trackEvent(eventName, properties = {}) {
+function trackAnalytics(eventName, properties = {}) {
   try {
-    // Check if Splitbee is available
-    if (typeof splitbee !== 'undefined') {
-      splitbee.track(eventName, properties);
-    } else if (window.splitbee) {
+    // Track with Splitbee if available
+    if (window.splitbee) {
       window.splitbee.track(eventName, properties);
     }
-  } catch (error) {
-    console.warn('Analytics tracking failed:', error);
-    // Don't block form submission if analytics fails
-  }
-}
-
-/**
- * Makes API request to MailerLite to add subscriber
- * @param {Object} subscriberData - Subscriber information
- * @returns {Promise<Object>} - API response
- */
-async function addSubscriberToMailerLite(subscriberData) {
-  const config = getConfig();
-  
-  // Validate configuration
-  if (!config.apiKey || !config.groupId) {
-    throw new Error('MISSING_CONFIG');
-  }
-
-  const requestBody = {
-    email: subscriberData.email,
-    fields: {},
-    groups: [config.groupId]
-  };
-
-  // Add optional school field if provided
-  if (subscriberData.school) {
-    requestBody.fields.school = subscriberData.school;
-  }
-
-  const response = await fetch(`${MAILERLITE_API_BASE_URL}/subscribers`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-MailerLite-ApiKey': config.apiKey,
-      'Accept': 'application/json'
-    },
-    body: JSON.stringify(requestBody)
-  });
-
-  // Handle different response status codes
-  if (response.status === 429) {
-    throw new Error('RATE_LIMITED');
-  }
-
-  if (response.status === 400) {
-    const errorData = await response.json();
-    // Check if it's a duplicate email error
-    if (errorData.error && errorData.error.message && 
-        errorData.error.message.includes('already exists')) {
-      throw new Error('DUPLICATE_EMAIL');
+    
+    // Track with Vercel Analytics if available
+    if (window.va) {
+      window.va('event', eventName, properties);
     }
-    throw new Error('API_ERROR');
+  } catch (error) {
+    // Silently fail analytics tracking to not block form submission
   }
-
-  if (!response.ok) {
-    throw new Error('API_ERROR');
-  }
-
-  return await response.json();
 }
 
 /**
- * Displays error message to user with styled appearance
+ * Displays error message to user
  * @param {string} message - Error message to display
- * @param {HTMLElement} container - Container element for error display
+ * @param {string} field - Field name for specific error display
  */
-function displayError(message, container) {
-  // Remove any existing error messages
-  const existingError = container.querySelector('.error-message');
-  if (existingError) {
-    existingError.remove();
-  }
-
-  // Create and style error message element
-  const errorElement = document.createElement('div');
-  errorElement.className = 'error-message';
-  errorElement.style.cssText = `
-    background: rgba(239, 68, 68, 0.1);
-    border: 1px solid rgba(239, 68, 68, 0.3);
-    color: #fca5a5;
-    padding: 12px 16px;
-    border-radius: 12px;
-    margin-top: 12px;
+function showError(message, field = null) {
+  // Clear previous errors
+  const errorElements = document.querySelectorAll('.error-message');
+  errorElements.forEach(el => el.remove());
+  
+  // Create error element
+  const errorDiv = document.createElement('div');
+  errorDiv.className = 'error-message';
+  errorDiv.style.cssText = `
+    color: #ef4444;
     font-size: 14px;
-    backdrop-filter: blur(10px);
-    animation: slideIn 0.3s ease-out;
+    margin-top: 8px;
+    padding: 8px 12px;
+    background-color: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    border-radius: 8px;
+    margin-bottom: 12px;
   `;
-  errorElement.textContent = message;
-
-  // Add slide-in animation
-  const style = document.createElement('style');
-  style.textContent = `
-    @keyframes slideIn {
-      from { opacity: 0; transform: translateY(-10px); }
-      to { opacity: 1; transform: translateY(0); }
+  errorDiv.textContent = message;
+  
+  // Insert error message
+  if (field) {
+    const fieldElement = document.querySelector(`[name="${field}"]`);
+    if (fieldElement) {
+      fieldElement.parentNode.insertBefore(errorDiv, fieldElement.nextSibling);
     }
-  `;
-  document.head.appendChild(style);
-
-  container.appendChild(errorElement);
-
-  // Auto-remove error after 5 seconds
-  setTimeout(() => {
-    if (errorElement.parentNode) {
-      errorElement.style.animation = 'slideOut 0.3s ease-in forwards';
-      setTimeout(() => errorElement.remove(), 300);
-    }
-  }, 5000);
-}
-
-/**
- * Updates button state during form submission
- * @param {HTMLButtonElement} button - Submit button element
- * @param {boolean} isLoading - Whether form is currently submitting
- */
-function updateButtonState(button, isLoading) {
-  if (isLoading) {
-    button.disabled = true;
-    button.dataset.originalText = button.textContent;
-    button.innerHTML = `
-      <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-      </svg>
-      Joining waitlist...
-    `;
-    button.style.opacity = '0.7';
-    button.style.cursor = 'not-allowed';
   } else {
-    button.disabled = false;
-    button.textContent = button.dataset.originalText || 'Join the Waitlist';
-    button.style.opacity = '1';
-    button.style.cursor = 'pointer';
+    const form = document.querySelector('[data-signup-form]');
+    if (form) {
+      form.insertBefore(errorDiv, form.firstChild);
+    }
   }
 }
 
 /**
- * Main form submission handler
- * @param {Event} event - Form submit event
+ * Shows success message and redirects to thank you page
+ * @param {string} message - Success message to display
  */
-async function handleFormSubmission(event) {
-  event.preventDefault();
-
-  const form = event.target;
-  const formData = new FormData(form);
-  const submitButton = form.querySelector('button[type="submit"]');
-  const errorContainer = form.parentElement;
-
-  // Extract and sanitize form data
-  const email = sanitizeInput(formData.get('email'));
-  const school = sanitizeInput(formData.get('school') || '');
-
-  // Client-side validation
-  if (!email) {
-    displayError(ERROR_MESSAGES.INVALID_EMAIL, errorContainer);
-    return;
+function showSuccess(message) {
+  // Create success element
+  const successDiv = document.createElement('div');
+  successDiv.className = 'success-message';
+  successDiv.style.cssText = `
+    color: #10b981;
+    font-size: 14px;
+    margin-top: 8px;
+    padding: 8px 12px;
+    background-color: rgba(16, 185, 129, 0.1);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+    border-radius: 8px;
+    margin-bottom: 12px;
+  `;
+  successDiv.textContent = message;
+  
+  // Insert success message
+  const form = document.querySelector('[data-signup-form]');
+  if (form) {
+    form.insertBefore(successDiv, form.firstChild);
   }
-
-  if (!validateEmailFormat(email)) {
-    displayError(ERROR_MESSAGES.INVALID_EMAIL, errorContainer);
-    return;
-  }
-
-  // Update UI to loading state
-  updateButtonState(submitButton, true);
-
-  try {
-    // Track form submission attempt
-    trackEvent('signup_attempt', { email_domain: email.split('@')[1] });
-
-    // Submit to MailerLite API
-    const subscriberData = { email, school };
-    const response = await addSubscriberToMailerLite(subscriberData);
-
-    // Track successful signup
-    trackEvent('signup_event', { 
-      email_domain: email.split('@')[1],
-      has_school: !!school,
-      subscriber_id: response.id
-    });
-
-    // Redirect to thank-you page on success
+  
+  // Redirect after 2 seconds
+  setTimeout(() => {
     window.location.href = THANK_YOU_PAGE_URL;
+  }, 2000);
+}
 
+/**
+ * Handles form submission with validation and API call
+ * @param {Event} event - Form submission event
+ */
+async function handleSubmit(event) {
+  event.preventDefault();
+  
+  // Get form elements
+  const form = event.target;
+  const emailInput = form.querySelector('[name="email"]');
+  const schoolInput = form.querySelector('[name="school"]');
+  const submitButton = form.querySelector('button[type="submit"]');
+  
+  if (!emailInput || !submitButton) {
+    return;
+  }
+  
+  // Get and sanitize form data
+  const email = sanitizeInput(emailInput.value);
+  const school = schoolInput ? sanitizeInput(schoolInput.value) : '';
+  
+  // Validate email
+  if (!email) {
+    showError(ERROR_MESSAGES.INVALID_EMAIL, 'email');
+    return;
+  }
+  
+  if (!validateEmailFormat(email)) {
+    showError(ERROR_MESSAGES.INVALID_EMAIL, 'email');
+    return;
+  }
+  
+  // Validate school field length
+  if (school && school.length > 100) {
+    showError('School name is too long (max 100 characters)', 'school');
+    return;
+  }
+  
+  // Disable submit button to prevent duplicate submissions
+  submitButton.disabled = true;
+  submitButton.textContent = 'Joining...';
+  
+  try {
+    // Track signup attempt
+    trackAnalytics('signup_attempt', {
+      email_domain: email.split('@')[1],
+      has_school: !!school
+    });
+    
+    // Make API call to Next.js API route
+    const response = await fetch('/api/signup', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email: email,
+        school: school || undefined
+      }),
+    });
+    
+    const result = await response.json();
+    
+    if (!response.ok) {
+      // Handle different error types
+      let errorMessage = ERROR_MESSAGES.API_ERROR;
+      
+      if (response.status === 400) {
+        if (result.error === 'DUPLICATE_EMAIL') {
+          errorMessage = ERROR_MESSAGES.DUPLICATE_EMAIL;
+        } else if (result.error === 'INVALID_EMAIL') {
+          errorMessage = ERROR_MESSAGES.INVALID_EMAIL;
+        }
+      } else if (response.status === 429) {
+        errorMessage = ERROR_MESSAGES.RATE_LIMITED;
+      } else if (response.status === 500) {
+        if (result.error === 'MISSING_CONFIG') {
+          errorMessage = ERROR_MESSAGES.MISSING_CONFIG;
+        }
+      }
+      
+      // Track signup error
+      trackAnalytics('signup_error', {
+        error_type: result.error || 'unknown',
+        email_domain: email.split('@')[1],
+        status_code: response.status
+      });
+      
+      showError(errorMessage);
+      
+    } else {
+      // Success - track signup event
+      trackAnalytics('signup_event', {
+        email_domain: email.split('@')[1],
+        has_school: !!school,
+        subscriber_id: result.subscriber_id
+      });
+      
+      showSuccess('Successfully joined the waitlist! Redirecting...');
+    }
+    
   } catch (error) {
-    console.error('Form submission error:', error);
-
-    // Track failed signup
-    trackEvent('signup_error', { 
-      error_type: error.message,
+    // Network or other error
+    trackAnalytics('signup_error', {
+      error_type: 'network_error',
       email_domain: email.split('@')[1]
     });
-
-    // Display appropriate error message
-    let errorMessage = ERROR_MESSAGES.API_ERROR;
     
-    if (error.message === 'MISSING_CONFIG') {
-      errorMessage = ERROR_MESSAGES.MISSING_CONFIG;
-    } else if (error.message === 'DUPLICATE_EMAIL') {
-      errorMessage = ERROR_MESSAGES.DUPLICATE_EMAIL;
-    } else if (error.message === 'RATE_LIMITED') {
-      errorMessage = ERROR_MESSAGES.RATE_LIMITED;
-    } else if (error.name === 'TypeError' || error.message.includes('fetch')) {
-      errorMessage = ERROR_MESSAGES.NETWORK_ERROR;
-    }
-
-    displayError(errorMessage, errorContainer);
-
+    showError(ERROR_MESSAGES.NETWORK_ERROR);
+    
   } finally {
-    // Reset button state
-    updateButtonState(submitButton, false);
+    // Re-enable submit button
+    submitButton.disabled = false;
+    submitButton.textContent = 'Join the Waitlist';
   }
 }
 
 /**
  * Initialize form handling when DOM is ready
  */
-function initializeFormHandling() {
-  // Find all signup forms on the page
-  const signupForms = document.querySelectorAll('form[data-signup-form]');
+function initializeForm() {
+  const form = document.querySelector('[data-signup-form]');
   
-  signupForms.forEach(form => {
-    // Remove any existing event listeners to prevent duplicates
-    form.removeEventListener('submit', handleFormSubmission);
+  if (form) {
+    // Add submit event listener
+    form.addEventListener('submit', handleSubmit);
     
-    // Add form submission handler
-    form.addEventListener('submit', handleFormSubmission);
+    // Add input event listeners to clear errors on typing
+    const emailInput = form.querySelector('[name="email"]');
+    const schoolInput = form.querySelector('[name="school"]');
     
-    // Add real-time email validation
-    const emailInput = form.querySelector('input[type="email"]');
     if (emailInput) {
-      emailInput.addEventListener('blur', function() {
-        const email = sanitizeInput(this.value);
-        if (email && !validateEmailFormat(email)) {
-          displayError(ERROR_MESSAGES.INVALID_EMAIL, form.parentElement);
-        }
-      });
-
-      // Clear errors when user starts typing
-      emailInput.addEventListener('input', function() {
-        const errorMessage = form.parentElement.querySelector('.error-message');
-        if (errorMessage) {
-          errorMessage.remove();
+      emailInput.addEventListener('input', () => {
+        const errorElement = emailInput.parentNode.querySelector('.error-message');
+        if (errorElement) {
+          errorElement.remove();
         }
       });
     }
-  });
+    
+    if (schoolInput) {
+      schoolInput.addEventListener('input', () => {
+        const errorElement = schoolInput.parentNode.querySelector('.error-message');
+        if (errorElement) {
+          errorElement.remove();
+        }
+      });
+    }
+  }
 }
 
 // Initialize when DOM is ready
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initializeFormHandling);
+  document.addEventListener('DOMContentLoaded', initializeForm);
 } else {
-  initializeFormHandling();
-}
-
-// Export functions for testing (if in Node.js environment)
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = {
-    validateEmailFormat,
-    sanitizeInput,
-    handleFormSubmission,
-    ERROR_MESSAGES
-  };
+  initializeForm();
 }

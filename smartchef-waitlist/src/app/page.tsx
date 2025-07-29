@@ -1,7 +1,7 @@
 /**
- * Savr Waitlist Landing Page
+ * SmartChef Waitlist Landing Page
  * 
- * This is the main landing page component for the Savr waitlist application.
+ * This is the main landing page component for the SmartChef waitlist application.
  * It provides a comprehensive marketing experience with animated sections, interactive
  * chat demo, email signup form, and analytics tracking.
  * 
@@ -15,7 +15,7 @@
  * - Performance optimized with Next.js best practices
  * 
  * Requirements covered:
- * - 1.1: Complete Savr landing page with all sections
+ * - 1.1: Complete SmartChef landing page with all sections
  * - 1.2: Responsive design for all device sizes
  * - 1.3: Smooth animations and transitions
  * - 1.4: Smooth scroll navigation
@@ -28,7 +28,7 @@
  * - 3.4: Splitbee script inclusion
  * - 5.4: TypeScript for type safety
  * 
- * @author Savr Team
+ * @author SmartChef Team
  * @version 1.0.0
  */
 
@@ -47,7 +47,7 @@ import {
   Sparkles,
   Play
 } from 'lucide-react';
-import { trackSignup, trackSignupError, trackCTAClick } from '../lib/analytics';
+import { validateEmailForUI, validateSchoolForUI } from '../lib/validation';
 
 // Lazy load non-critical components for better performance
 const LazyTestimonialSection = lazy(() => import('./components/TestimonialSection'));
@@ -148,62 +148,6 @@ export default function SmartChefLandingPage() {
   /** Initial signup count displayed in hero section for social proof */
   const initialSignupCount = 2847;
   
-  /** Email validation regex pattern - RFC 5322 compliant basic validation */
-  const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  
-  /**
-   * Form validation functions
-   * These functions provide client-side validation before API submission
-   * to improve user experience and reduce server load
-   */
-
-  /**
-   * Validates email address format and requirements
-   * @param {string} email - Email address to validate
-   * @returns {string | null} Error message if invalid, null if valid
-   */
-  const validateEmail = (email: string): string | null => {
-    if (!email.trim()) {
-      return 'Email is required';
-    }
-    if (!EMAIL_REGEX.test(email)) {
-      return 'Please enter a valid email address';
-    }
-    if (email.length > 254) {
-      return 'Email address is too long';
-    }
-    return null;
-  };
-  
-  /**
-   * Validates optional school field
-   * @param {string} school - School name to validate
-   * @returns {string | null} Error message if invalid, null if valid
-   */
-  const validateSchool = (school: string): string | null => {
-    if (school && school.length > 100) {
-      return 'School name is too long (max 100 characters)';
-    }
-    return null;
-  };
-  
-  /**
-   * Validates entire form data and returns all errors
-   * @param {FormData} formData - Form data to validate
-   * @returns {FormValidationErrors} Object containing all validation errors
-   */
-  const validateForm = (formData: FormData): FormValidationErrors => {
-    const errors: FormValidationErrors = {};
-    
-    const emailError = validateEmail(formData.email);
-    if (emailError) errors.email = emailError;
-    
-    const schoolError = validateSchool(formData.school || '');
-    if (schoolError) errors.school = schoolError;
-    
-    return errors;
-  };
-  
   /**
    * Demo message sets for the interactive chat demonstration
    * 
@@ -247,6 +191,23 @@ export default function SmartChefLandingPage() {
       { type: 'bot', text: "Recipe incoming! Fair warning: you might become obsessed. Don't say I didn't warn you 😄🧀" }
     ]
   ], []);
+
+  /**
+   * Validates entire form data and returns all errors
+   * @param {FormData} formData - Form data to validate
+   * @returns {FormValidationErrors} Object containing all validation errors
+   */
+  const validateForm = (formData: FormData): FormValidationErrors => {
+    const errors: FormValidationErrors = {};
+    
+    const emailError = validateEmailForUI(formData.email);
+    if (emailError) errors.email = emailError;
+    
+    const schoolError = validateSchoolForUI(formData.school || '');
+    if (schoolError) errors.school = schoolError;
+    
+    return errors;
+  };
 
   /**
    * Component State Management
@@ -431,12 +392,14 @@ export default function SmartChefLandingPage() {
         throw new Error(errorMessage);
       }
       
-      // Track successful signup with unified analytics (Vercel Analytics + Splitbee)
-      trackSignup({
-        email_domain: formData.email.split('@')[1], // Track domain for insights
-        has_school: !!formData.school, // Track if school field was filled
-        subscriber_id: result.subscriber_id // Track MailerLite subscriber ID
-      });
+      // Track successful signup with detailed analytics
+      if (typeof window !== 'undefined' && window.splitbee) {
+        window.splitbee.track('signup_event', {
+          email_domain: formData.email.split('@')[1], // Track domain for insights
+          has_school: !!formData.school, // Track if school field was filled
+          subscriber_id: result.subscriber_id // Track MailerLite subscriber ID
+        });
+      }
       
       // Update UI to success state
       setSignupForm(prev => ({ ...prev, isSubmitted: true, isLoading: false }));
@@ -448,11 +411,13 @@ export default function SmartChefLandingPage() {
       }, 2000);
       
     } catch (error) {
-      // Track failed signup attempts with unified analytics
-      trackSignupError({
-        error_type: error instanceof Error ? error.message : 'unknown',
-        email_domain: formData.email.split('@')[1]
-      });
+      // Track failed signup attempts for debugging and optimization
+      if (typeof window !== 'undefined' && window.splitbee) {
+        window.splitbee.track('signup_error', {
+          error_type: error instanceof Error ? error.message : 'unknown',
+          email_domain: formData.email.split('@')[1]
+        });
+      }
       
       // Update UI with error state and user-friendly message
       setSignupForm(prev => ({ 
@@ -504,15 +469,21 @@ export default function SmartChefLandingPage() {
    * Analytics tracking helper function
    * 
    * Centralized function for tracking call-to-action button clicks
-   * throughout the landing page. Uses unified analytics (Vercel Analytics + Splitbee)
-   * for comprehensive data collection and redundancy.
+   * throughout the landing page. Provides consistent event structure
+   * and handles cases where analytics might not be available.
    * 
    * @param {string} buttonName - Unique identifier for the button clicked
    * @param {string} section - Page section where the button is located
    * @param {Record<string, unknown>} additionalProps - Optional additional event properties
    */
-  const handleCTAClick = (buttonName: string, section: string, additionalProps?: Record<string, unknown>) => {
-    trackCTAClick(buttonName, section, additionalProps);
+  const trackCTAClick = (buttonName: string, section: string, additionalProps?: Record<string, unknown>) => {
+    if (typeof window !== 'undefined' && window.splitbee) {
+      window.splitbee.track('cta_click', { 
+        button_name: buttonName,
+        section: section,
+        ...additionalProps
+      });
+    }
   };
 
   /**
@@ -526,7 +497,7 @@ export default function SmartChefLandingPage() {
    */
   const scrollToSignup = (buttonName = 'join_waitlist_hero', section = 'hero') => {
     // Track CTA click event for conversion analysis
-    handleCTAClick(buttonName, section);
+    trackCTAClick(buttonName, section);
     
     // Smooth scroll to signup form for better user experience
     document.getElementById('signup')?.scrollIntoView({ behavior: 'smooth' });
@@ -636,9 +607,9 @@ export default function SmartChefLandingPage() {
                 transition={{ duration: 0.6, delay: 0.2 }}
               >
                 <motion.img
-                  src="/savr-logo.svg"
+                  src="/savr-logo.png"
                   alt="Savr - AI That Gets Why You Eat"
-                  className="h-16 sm:h-20 md:h-24 lg:h-28 w-auto"
+                  className="h-8 sm:h-10 md:h-12 lg:h-14 w-auto"
                   animate={{ 
                     scale: [1, 1.02, 1]
                   }}
@@ -873,7 +844,7 @@ export default function SmartChefLandingPage() {
             >
               <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-6xl font-black mb-8 sm:mb-12 tracking-tight px-2">
                 🍽️ Meals aren&apos;t made with{' '}
-                <span className="line-through text-white font-bold decoration-red-600 decoration-4">recipes</span>
+                <span className="line-through text-gray-500">recipes</span>
               </h2>
               
               <div className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-gray-300 mb-8 sm:mb-16 space-y-2 sm:space-y-4 font-light">
@@ -885,7 +856,7 @@ export default function SmartChefLandingPage() {
                   { text: "Friday night moods", icon: "🎉", color: "from-purple-500 to-pink-500" },
                   { text: "$14 in your bank account", icon: "💸", color: "from-red-500 to-orange-500" },
                   { text: "that weird leftover rice", icon: "🍚", color: "from-yellow-500 to-orange-500" },
-                  { text: "a craving you can't quite name", icon: "🤔", color: "from-blue-500 to-purple-500" }
+                  { text: "a craving you can&apos;t quite name", icon: "🤔", color: "from-blue-500 to-purple-500" }
                 ].map((item, index) => (
                   <motion.div
                     key={index}
@@ -911,7 +882,7 @@ export default function SmartChefLandingPage() {
 
               <div className="bg-white/5 border border-white/10 backdrop-blur-xl rounded-3xl p-6 sm:p-8 mb-8 sm:mb-12">
                 <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-white font-light leading-relaxed">
-                  SmartChef is your <span className="font-semibold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">Contextual Culinary Intelligence</span> copilot -<br className="hidden sm:block" />
+                  SmartChef is your <span className="font-semibold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">Contextual Culinary Intelligence</span> copilot —<br className="hidden sm:block" />
                   a personalized cooking experience that knows your <em className="text-purple-400">vibe</em>, not just your ingredients.
                 </p>
               </div>
@@ -930,7 +901,7 @@ export default function SmartChefLandingPage() {
             >
               <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-6xl font-black mb-8 sm:mb-12 tracking-tight px-2">
                 🤯 Old apps treat cooking like a{' '}
-                <span className="line-through text-white font-bold decoration-red-600 decoration-4">checklist</span>
+                <span className="line-through text-gray-500">checklist</span>
               </h2>
               <h3 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-8 sm:mb-16 text-white px-2">
                 We treat it like a <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">moment in your life</span>
@@ -938,20 +909,20 @@ export default function SmartChefLandingPage() {
 
               <div className="bg-white/5 border border-white/10 backdrop-blur-xl rounded-3xl p-6 sm:p-8 lg:p-12 mb-8 sm:mb-16">
                 <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-gray-300 mb-6 sm:mb-8 font-light leading-relaxed">
-                  &quot;What should I eat?&quot; isn&apos;t a recipe question -<br className="hidden sm:block" />
+                  &quot;What should I eat?&quot; isn&apos;t a recipe question —<br className="hidden sm:block" />
                   it&apos;s a question about <span className="text-purple-400 font-medium">mood</span>, <span className="text-pink-400 font-medium">motivation</span>, <span className="text-orange-400 font-medium">money</span>, and <span className="text-blue-400 font-medium">meaning</span>.
                 </p>
                 <p className="text-base sm:text-lg md:text-xl text-white font-medium">
-                  SmartChef looks at your context - not just your fridge - and serves up food that actually fits your day.
+                  SmartChef looks at your context — not just your fridge — and serves up food that actually fits your day.
                 </p>
               </div>
             </motion.div>
           </div>
         </section>
 
-        {/* How It Works - Redesigned with Vertical Steps + Demo Side by Side */}
+        {/* Chat Demo Section */}
         <section className="py-16 sm:py-24 lg:py-32 px-4 bg-gradient-to-b from-transparent via-white/5 to-transparent">
-          <div className="max-w-7xl mx-auto">
+          <div className="max-w-4xl mx-auto">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -965,264 +936,241 @@ export default function SmartChefLandingPage() {
               </h2>
             </motion.div>
 
-            {/* Side by Side Layout: Vertical Steps + Demo */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
-              
-              {/* Left Side: Vertical Steps */}
-              <div className="space-y-6">
-                {[
-                  {
-                    step: "🧠 Step 1",
-                    title: "Tell SmartChef how you're feeling",
-                    description: '"It\'s Sunday, I\'m hungover, I\'ve got $10 and no energy."',
-                    icon: <Brain className="w-6 h-6 sm:w-8 sm:h-8" />
-                  },
-                  {
-                    step: "🍜 Step 2", 
-                    title: "Get a recipe that fits your real life",
-                    description: "Mood-matching meals. Budget-aware. 15-min max. Zero food guilt.",
-                    icon: <Heart className="w-6 h-6 sm:w-8 sm:h-8" />
-                  },
-                  {
-                    step: "📦 Step 3",
-                    title: "Grocery list? Sorted. Leftovers? Optimized.",
-                    description: "SmartChef helps you stretch your pantry, not your wallet.",
-                    icon: <Zap className="w-6 h-6 sm:w-8 sm:h-8" />
-                  }
-                ].map((item, index) => (
-                  <motion.div
-                    key={index}
-                    initial={{ opacity: 0, x: -50 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.6, delay: index * 0.2 }}
-                    viewport={{ once: true }}
-                    className="relative"
-                  >
-                    <div className="bg-white/5 border border-white/10 backdrop-blur-xl rounded-3xl p-6 hover:bg-white/10 transition-all duration-300 hover:scale-105">
-                      <div className="flex items-start gap-4">
-                        <div className="text-purple-400 shrink-0 mt-1">
-                          {item.icon}
-                        </div>
-                        <div className="flex-1">
-                          <h3 className="text-lg font-bold mb-2 text-purple-400">
-                            {item.step}
-                          </h3>
-                          <h4 className="text-xl font-semibold mb-3 text-white leading-tight">
-                            {item.title}
-                          </h4>
-                          <p className="text-base text-gray-400 leading-relaxed font-light">
-                            {item.description}
-                          </p>
-                        </div>
-                      </div>
+            {/* Step by Step */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mb-12 sm:mb-16">
+              {[
+                {
+                  step: "🧠 Step 1",
+                  title: "Tell SmartChef how you&apos;re feeling",
+                  description: "&quot;It&apos;s Sunday, I&apos;m hungover, I&apos;ve got $10 and no energy.&quot;",
+                  icon: <Brain className="w-6 h-6 sm:w-8 sm:h-8" />
+                },
+                {
+                  step: "🍜 Step 2", 
+                  title: "Get a recipe that fits your real life",
+                  description: "Mood-matching meals. Budget-aware. 15-min max. Zero food guilt.",
+                  icon: <Heart className="w-6 h-6 sm:w-8 sm:h-8" />
+                },
+                {
+                  step: "📦 Step 3",
+                  title: "Grocery list? Sorted. Leftovers? Optimized.",
+                  description: "SmartChef helps you stretch your pantry, not your wallet.",
+                  icon: <Zap className="w-6 h-6 sm:w-8 sm:h-8" />
+                }
+              ].map((item, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 50 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: index * 0.2 }}
+                  viewport={{ once: true }}
+                  className="text-center sm:col-span-2 lg:col-span-1 last:sm:col-start-1 last:sm:col-end-3 last:lg:col-start-auto last:lg:col-end-auto"
+                >
+                  <div className="bg-white/5 border border-white/10 backdrop-blur-xl rounded-3xl p-4 sm:p-6 h-full hover:bg-white/10 transition-all duration-300">
+                    <div className="text-purple-400 mb-4 flex justify-center">
+                      {item.icon}
                     </div>
-                    
-                    {/* Connecting Line */}
-                    {index < 2 && (
-                      <div className="absolute left-8 top-full w-0.5 h-6 bg-gradient-to-b from-purple-400 to-transparent opacity-50"></div>
-                    )}
-                  </motion.div>
-                ))}
-              </div>
+                    <h3 className="text-base sm:text-lg font-bold mb-2 text-purple-400">
+                      {item.step}
+                    </h3>
+                    <h4 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4 text-white leading-tight">
+                      {item.title}
+                    </h4>
+                    <p className="text-sm sm:text-base text-gray-400 leading-relaxed font-light">
+                      {item.description}
+                    </p>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
 
-              {/* Right Side: Interactive Demo */}
-              <motion.div
-                initial={{ opacity: 0, x: 50 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.6, delay: 0.3 }}
-                viewport={{ once: true }}
-                className="lg:sticky lg:top-8"
-              >
-                {/* Enhanced Interactive Chat Demo */}
-                <div className="bg-white/5 border border-white/10 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl">
-                  {/* Chat Header */}
-                  <div className="bg-gradient-to-r from-purple-500/20 to-pink-500/20 border-b border-white/10 px-4 sm:px-6 py-3 sm:py-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full flex items-center justify-center">
-                        <Brain className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
-                      </div>
-                      <div>
-                        <h3 className="text-white font-semibold text-sm sm:text-base">SmartChef</h3>
-                        <p className="text-purple-300 text-xs sm:text-sm">Your Contextual Culinary Intelligence</p>
-                      </div>
-                      <div className="ml-auto flex items-center gap-1">
-                        <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                        <span className="text-green-400 text-xs font-medium">Online</span>
-                      </div>
-                    </div>
+            {/* Enhanced Interactive Chat Demo */}
+            <div className="bg-white/5 border border-white/10 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl">
+              {/* Chat Header */}
+              <div className="bg-gradient-to-r from-purple-500/20 to-pink-500/20 border-b border-white/10 px-4 sm:px-6 py-3 sm:py-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full flex items-center justify-center">
+                    <Brain className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                   </div>
-                  
-                  {/* Chat Messages */}
-                  <div className="p-4 sm:p-6 lg:p-8">
-                    <div className="space-y-4 sm:space-y-6 h-72 sm:h-80 flex flex-col justify-end overflow-hidden">
-                      {isClient ? (
-                        <AnimatePresence mode="wait">
-                          <motion.div
-                            key={`${currentDemoSet}-${currentMessageIndex}`}
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            transition={{ duration: 0.3 }}
-                            className="space-y-4 sm:space-y-6"
-                          >
-                            {demoMessageSets[currentDemoSet].slice(0, currentMessageIndex + 1).map((msg, index) => (
-                              <motion.div
-                                key={`${currentDemoSet}-${index}`}
-                                initial={{ opacity: 0, y: 20, scale: 0.95 }}
-                                animate={{ opacity: 1, y: 0, scale: 1 }}
-                                transition={{ 
-                                  duration: 0.4, 
-                                  delay: index * 0.1,
-                                  ease: "easeOut"
-                                }}
-                                className={`flex ${msg.type === 'user' ? 'justify-end' : 'justify-start'}`}
-                              >
-                                <div
-                                  className={`max-w-xs sm:max-w-sm px-4 sm:px-6 py-3 sm:py-4 rounded-3xl text-sm sm:text-base lg:text-lg relative ${
-                                    msg.type === 'user'
-                                      ? 'bg-gradient-to-r from-purple-500 to-pink-600 text-white font-medium shadow-lg shadow-purple-500/25'
-                                      : 'bg-white/10 text-white border border-white/20 backdrop-blur-sm shadow-lg'
-                                  }`}
-                                >
-                                  {msg.type === 'bot' && (
-                                    <div className="flex items-center gap-2 mb-2">
-                                      <motion.div 
-                                        className="w-5 h-5 sm:w-6 sm:h-6 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full flex items-center justify-center"
-                                        animate={{ 
-                                          scale: [1, 1.1, 1],
-                                          rotate: [0, 5, -5, 0]
-                                        }}
-                                        transition={{ 
-                                          duration: 2,
-                                          repeat: Infinity,
-                                          ease: "easeInOut"
-                                        }}
-                                      >
-                                        <Brain className="w-2 h-2 sm:w-3 sm:h-3 text-white" />
-                                      </motion.div>
-                                      <span className="text-xs sm:text-sm text-purple-400 font-medium">SmartChef</span>
-                                    </div>
-                                  )}
-                                  <motion.div
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: 1 }}
-                                    transition={{ duration: 0.5, delay: 0.2 }}
-                                  >
-                                    {msg.text}
-                                  </motion.div>
-                                  
-                                  {/* Message tail */}
-                                  <div className={`absolute top-4 ${
-                                    msg.type === 'user' 
-                                      ? 'right-0 translate-x-1/2' 
-                                      : 'left-0 -translate-x-1/2'
-                                  }`}>
-                                    <div className={`w-3 h-3 rotate-45 ${
-                                      msg.type === 'user'
-                                        ? 'bg-gradient-to-br from-purple-500 to-pink-600'
-                                        : 'bg-white/10 border-l border-t border-white/20'
-                                    }`}></div>
-                                  </div>
-                                </div>
-                              </motion.div>
-                            ))}
-                            
-                            {/* Typing Indicator */}
-                            {isTyping && (
-                              <motion.div
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, y: -20 }}
-                                className="flex justify-start"
-                              >
-                                <div className="bg-white/10 border border-white/20 backdrop-blur-sm rounded-3xl px-4 sm:px-6 py-3 sm:py-4 relative">
-                                  <div className="flex items-center gap-2 mb-2">
-                                    <div className="w-5 h-5 sm:w-6 sm:h-6 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full flex items-center justify-center">
-                                      <Brain className="w-2 h-2 sm:w-3 sm:h-3 text-white" />
-                                    </div>
-                                    <span className="text-xs sm:text-sm text-purple-400 font-medium">SmartChef</span>
-                                  </div>
-                                  <div className="flex items-center gap-1">
-                                    <div className="flex gap-1">
-                                      {[0, 1, 2].map((i) => (
-                                        <motion.div
-                                          key={i}
-                                          className="w-2 h-2 bg-purple-400 rounded-full"
-                                          animate={{
-                                            scale: [1, 1.2, 1],
-                                            opacity: [0.5, 1, 0.5]
-                                          }}
-                                          transition={{
-                                            duration: 1,
-                                            repeat: Infinity,
-                                            delay: i * 0.2
-                                          }}
-                                        />
-                                      ))}
-                                    </div>
-                                    <span className="text-gray-400 text-sm ml-2">typing...</span>
-                                  </div>
-                                  
-                                  {/* Typing indicator tail */}
-                                  <div className="absolute top-4 left-0 -translate-x-1/2">
-                                    <div className="w-3 h-3 rotate-45 bg-white/10 border-l border-t border-white/20"></div>
-                                  </div>
-                                </div>
-                              </motion.div>
-                            )}
-                          </motion.div>
-                        </AnimatePresence>
-                      ) : (
-                        <div className="space-y-4 sm:space-y-6">
-                          {demoMessageSets[0].slice(0, 1).map((msg, index) => (
-                            <div
-                              key={index}
-                              className={`flex ${msg.type === 'user' ? 'justify-end' : 'justify-start'}`}
-                            >
-                              <div
-                                className={`max-w-xs sm:max-w-sm px-4 sm:px-6 py-3 sm:py-4 rounded-3xl text-sm sm:text-base lg:text-lg ${
-                                  msg.type === 'user'
-                                    ? 'bg-gradient-to-r from-purple-500 to-pink-600 text-white font-medium shadow-lg'
-                                    : 'bg-white/10 text-white border border-white/20 backdrop-blur-sm'
-                                }`}
-                              >
-                                {msg.type === 'bot' && (
-                                  <div className="flex items-center gap-2 mb-2">
-                                    <div className="w-5 h-5 sm:w-6 sm:h-6 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full flex items-center justify-center">
-                                      <Brain className="w-2 h-2 sm:w-3 sm:h-3 text-white" />
-                                    </div>
-                                    <span className="text-xs sm:text-sm text-purple-400 font-medium">SmartChef</span>
-                                  </div>
-                                )}
-                                {msg.text}
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </div>
+                  <div>
+                    <h3 className="text-white font-semibold text-sm sm:text-base">SmartChef</h3>
+                    <p className="text-purple-300 text-xs sm:text-sm">Your Contextual Culinary Intelligence</p>
                   </div>
-                  
-                  {/* Chat Input (Visual Only) */}
-                  <div className="border-t border-white/10 p-4 sm:p-6">
-                    <div className="flex items-center gap-3">
-                      <div className="flex-1 bg-white/5 border border-white/10 rounded-2xl px-4 py-3">
-                        <span className="text-gray-400 text-sm">Try Savr Soon...</span>
-                      </div>
-                      <motion.button
-                        className="bg-gradient-to-r from-purple-500 to-pink-600 p-3 rounded-xl shadow-lg"
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                      >
-                        <ArrowRight className="w-5 h-5 text-white" />
-                      </motion.button>
-                    </div>
+                  <div className="ml-auto flex items-center gap-1">
+                    <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                    <span className="text-green-400 text-xs font-medium">Online</span>
                   </div>
                 </div>
-              </motion.div>
+              </div>
+              
+              {/* Chat Messages */}
+              <div className="p-4 sm:p-6 lg:p-8">
+                <div className="space-y-4 sm:space-y-6 h-72 sm:h-80 flex flex-col justify-end overflow-hidden">
+                  {isClient ? (
+                    <AnimatePresence mode="wait">
+                      <motion.div
+                        key={`${currentDemoSet}-${currentMessageIndex}`}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.3 }}
+                        className="space-y-4 sm:space-y-6"
+                      >
+                        {demoMessageSets[currentDemoSet].slice(0, currentMessageIndex + 1).map((msg, index) => (
+                          <motion.div
+                            key={`${currentDemoSet}-${index}`}
+                            initial={{ opacity: 0, y: 20, scale: 0.95 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            transition={{ 
+                              duration: 0.4, 
+                              delay: index * 0.1,
+                              ease: "easeOut"
+                            }}
+                            className={`flex ${msg.type === 'user' ? 'justify-end' : 'justify-start'}`}
+                          >
+                            <div
+                              className={`max-w-xs sm:max-w-sm px-4 sm:px-6 py-3 sm:py-4 rounded-3xl text-sm sm:text-base lg:text-lg relative ${
+                                msg.type === 'user'
+                                  ? 'bg-gradient-to-r from-purple-500 to-pink-600 text-white font-medium shadow-lg shadow-purple-500/25'
+                                  : 'bg-white/10 text-white border border-white/20 backdrop-blur-sm shadow-lg'
+                              }`}
+                            >
+                              {msg.type === 'bot' && (
+                                <div className="flex items-center gap-2 mb-2">
+                                  <motion.div 
+                                    className="w-5 h-5 sm:w-6 sm:h-6 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full flex items-center justify-center"
+                                    animate={{ 
+                                      scale: [1, 1.1, 1],
+                                      rotate: [0, 5, -5, 0]
+                                    }}
+                                    transition={{ 
+                                      duration: 2,
+                                      repeat: Infinity,
+                                      ease: "easeInOut"
+                                    }}
+                                  >
+                                    <Brain className="w-2 h-2 sm:w-3 sm:h-3 text-white" />
+                                  </motion.div>
+                                  <span className="text-xs sm:text-sm text-purple-400 font-medium">SmartChef</span>
+                                </div>
+                              )}
+                              <motion.div
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                transition={{ duration: 0.5, delay: 0.2 }}
+                              >
+                                {msg.text}
+                              </motion.div>
+                              
+                              {/* Message tail */}
+                              <div className={`absolute top-4 ${
+                                msg.type === 'user' 
+                                  ? 'right-0 translate-x-1/2' 
+                                  : 'left-0 -translate-x-1/2'
+                              }`}>
+                                <div className={`w-3 h-3 rotate-45 ${
+                                  msg.type === 'user'
+                                    ? 'bg-gradient-to-br from-purple-500 to-pink-600'
+                                    : 'bg-white/10 border-l border-t border-white/20'
+                                }`}></div>
+                              </div>
+                            </div>
+                          </motion.div>
+                        ))}
+                        
+                        {/* Typing Indicator */}
+                        {isTyping && (
+                          <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -20 }}
+                            className="flex justify-start"
+                          >
+                            <div className="bg-white/10 border border-white/20 backdrop-blur-sm rounded-3xl px-4 sm:px-6 py-3 sm:py-4 relative">
+                              <div className="flex items-center gap-2 mb-2">
+                                <div className="w-5 h-5 sm:w-6 sm:h-6 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full flex items-center justify-center">
+                                  <Brain className="w-2 h-2 sm:w-3 sm:h-3 text-white" />
+                                </div>
+                                <span className="text-xs sm:text-sm text-purple-400 font-medium">SmartChef</span>
+                              </div>
+                              <div className="flex items-center gap-1">
+                                <div className="flex gap-1">
+                                  {[0, 1, 2].map((i) => (
+                                    <motion.div
+                                      key={i}
+                                      className="w-2 h-2 bg-purple-400 rounded-full"
+                                      animate={{
+                                        scale: [1, 1.2, 1],
+                                        opacity: [0.5, 1, 0.5]
+                                      }}
+                                      transition={{
+                                        duration: 1,
+                                        repeat: Infinity,
+                                        delay: i * 0.2
+                                      }}
+                                    />
+                                  ))}
+                                </div>
+                                <span className="text-gray-400 text-sm ml-2">typing...</span>
+                              </div>
+                              
+                              {/* Typing indicator tail */}
+                              <div className="absolute top-4 left-0 -translate-x-1/2">
+                                <div className="w-3 h-3 rotate-45 bg-white/10 border-l border-t border-white/20"></div>
+                              </div>
+                            </div>
+                          </motion.div>
+                        )}
+                      </motion.div>
+                    </AnimatePresence>
+                  ) : (
+                    <div className="space-y-4 sm:space-y-6">
+                      {demoMessageSets[0].slice(0, 1).map((msg, index) => (
+                        <div
+                          key={index}
+                          className={`flex ${msg.type === 'user' ? 'justify-end' : 'justify-start'}`}
+                        >
+                          <div
+                            className={`max-w-xs sm:max-w-sm px-4 sm:px-6 py-3 sm:py-4 rounded-3xl text-sm sm:text-base lg:text-lg ${
+                              msg.type === 'user'
+                                ? 'bg-gradient-to-r from-purple-500 to-pink-600 text-white font-medium shadow-lg'
+                                : 'bg-white/10 text-white border border-white/20 backdrop-blur-sm'
+                            }`}
+                          >
+                            {msg.type === 'bot' && (
+                              <div className="flex items-center gap-2 mb-2">
+                                <div className="w-5 h-5 sm:w-6 sm:h-6 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full flex items-center justify-center">
+                                  <Brain className="w-2 h-2 sm:w-3 sm:h-3 text-white" />
+                                </div>
+                                <span className="text-xs sm:text-sm text-purple-400 font-medium">SmartChef</span>
+                              </div>
+                            )}
+                            {msg.text}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+              
+              {/* Chat Input (Visual Only) */}
+              <div className="border-t border-white/10 p-4 sm:p-6">
+                <div className="flex items-center gap-3">
+                  <div className="flex-1 bg-white/5 border border-white/10 rounded-2xl px-4 py-3">
+                    <span className="text-gray-400 text-sm">Try SmartChef yourself...</span>
+                  </div>
+                  <motion.button
+                    className="bg-gradient-to-r from-purple-500 to-pink-600 p-3 rounded-xl shadow-lg"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <ArrowRight className="w-5 h-5 text-white" />
+                  </motion.button>
+                </div>
+              </div>
             </div>
           </div>
-
         </section>
 
         {/* Emotional Intelligence */}
@@ -1238,7 +1186,7 @@ export default function SmartChefLandingPage() {
                 💡 This isn&apos;t just cooking.
               </h2>
               <h3 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-8 sm:mb-16 px-2">
-                It&apos;s <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">emotional intelligence</span> - served hot.
+                It&apos;s <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">emotional intelligence</span> — served hot.
               </h3>
 
               <div className="bg-white/5 border border-white/10 backdrop-blur-xl rounded-3xl p-6 sm:p-8 mb-8 sm:mb-16">
@@ -1267,7 +1215,7 @@ export default function SmartChefLandingPage() {
 
               <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-white font-light leading-relaxed px-2">
                 We&apos;re not here to tell you what&apos;s &quot;healthy.&quot;<br />
-                We&apos;re here to help you <span className="font-semibold text-purple-400">feel good</span> about what you eat - every day.
+                We&apos;re here to help you <span className="font-semibold text-purple-400">feel good</span> about what you eat — every day.
               </p>
             </motion.div>
           </div>
@@ -1297,7 +1245,7 @@ export default function SmartChefLandingPage() {
 
               <div className="bg-white/5 border border-white/10 backdrop-blur-xl rounded-3xl p-6 sm:p-8 mb-8 sm:mb-12">
                 <p className="text-base sm:text-lg md:text-xl text-white mb-4 sm:mb-6 leading-relaxed">
-                  We&apos;re inviting <span className="font-bold text-pink-400">100 early users</span> to let SmartChef decide their meals for a full month -<br className="hidden sm:block" />
+                  We&apos;re inviting <span className="font-bold text-pink-400">100 early users</span> to let SmartChef decide their meals for a full month —<br className="hidden sm:block" />
                   based on mood, schedule, budget, and vibe.
                 </p>
                 <p className="text-sm sm:text-base md:text-lg text-gray-300 font-light">
@@ -1520,12 +1468,6 @@ export default function SmartChefLandingPage() {
       <Script
         src="/scripts/signup.js"
         strategy="afterInteractive"
-        onLoad={() => {
-          console.log('Signup script loaded successfully');
-        }}
-        onError={(e) => {
-          console.error('Failed to load signup script:', e);
-        }}
       />
       </div>
     </LazyMotion>

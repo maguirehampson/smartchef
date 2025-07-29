@@ -1,197 +1,204 @@
 /**
- * Unified Analytics Utility
+ * Analytics Integration for SmartChef Waitlist
  * 
- * This utility provides a centralized interface for tracking analytics events
- * across multiple platforms (Vercel Analytics and Splitbee) to ensure
- * comprehensive data collection and redundancy.
+ * This module provides unified analytics tracking across multiple platforms
+ * (Vercel Analytics + Splitbee) with proper error handling and type safety.
  * 
- * Features:
- * - Unified tracking interface for both Vercel Analytics and Splitbee
- * - Automatic fallback if one platform is unavailable
- * - Type-safe event tracking with predefined event types
- * - Performance monitoring integration
- * - Development mode logging for debugging
- * 
- * @author SmartChef Team
- * @version 1.0.0
+ * Requirements covered:
+ * - 3.1: Splitbee pageView tracking (automatic)
+ * - 3.2: signup_event tracking for successful submissions
+ * - 3.3: cta_click tracking for call-to-action buttons
+ * - 3.4: Splitbee script inclusion
  */
 
-'use client';
+import { createLogger } from './logger';
 
-import { track as vercelTrack } from '@vercel/analytics';
-
-/**
- * Analytics event types for type safety
- */
-export type AnalyticsEvent = 
-  | 'signup_event'
-  | 'signup_error'
-  | 'cta_click'
-  | 'web_vital'
-  | 'page_view'
-  | 'thank_you_page_view';
+// Create logger for this module
+const logger = createLogger('Analytics');
 
 /**
  * Analytics event properties interface
  */
-export interface AnalyticsProperties {
+interface AnalyticsProperties {
   [key: string]: string | number | boolean | undefined;
 }
 
 /**
- * Global window interface extension for Splitbee
+ * Track signup events with unified analytics
+ * @param properties - Event properties to track
  */
-declare global {
-  interface Window {
-    splitbee?: {
-      track: (event: string, properties?: Record<string, unknown>) => void;
-    };
-  }
-}
-
-/**
- * Unified analytics tracking function
- * 
- * Tracks events across both Vercel Analytics and Splitbee platforms
- * for comprehensive data collection and redundancy.
- * 
- * @param event - The event name to track
- * @param properties - Optional properties to include with the event
- * @param options - Additional tracking options
- */
-export function track(
-  event: AnalyticsEvent,
-  properties?: AnalyticsProperties,
-  options?: {
-    /** Skip Vercel Analytics tracking */
-    skipVercel?: boolean;
-    /** Skip Splitbee tracking */
-    skipSplitbee?: boolean;
-  }
-) {
-  const { skipVercel = false, skipSplitbee = false } = options || {};
-
-  // Filter out undefined values for Vercel Analytics compatibility
-  const cleanProperties = properties ? Object.fromEntries(
-    Object.entries(properties).filter(([, value]) => value !== undefined)
-  ) as Record<string, string | number | boolean> : undefined;
-
-  // Track with Vercel Analytics
-  if (!skipVercel) {
-    try {
-      vercelTrack(event, cleanProperties);
-    } catch (error) {
-      console.warn('Vercel Analytics tracking failed:', error);
+export function trackSignup(properties: AnalyticsProperties = {}): void {
+  try {
+    // Track with Vercel Analytics
+    if (typeof window !== 'undefined' && window.va) {
+      window.va('event', { name: 'signup_event', ...properties });
     }
-  }
-
-  // Track with Splitbee
-  if (!skipSplitbee && typeof window !== 'undefined' && window.splitbee) {
-    try {
-      window.splitbee.track(event, properties);
-    } catch (error) {
-      console.warn('Splitbee tracking failed:', error);
+    
+    // Track with Splitbee
+    if (typeof window !== 'undefined' && window.splitbee) {
+      window.splitbee.track('signup_event', properties);
     }
+    
+    logger.info('Signup event tracked', properties);
+  } catch (error) {
+    logger.error('Failed to track signup event', error);
   }
+}
 
-  // Development mode logging
-  if (process.env.NODE_ENV === 'development') {
-    console.log(`[Analytics] ${event}:`, properties);
+/**
+ * Track signup error events
+ * @param properties - Error properties to track
+ */
+export function trackSignupError(properties: AnalyticsProperties = {}): void {
+  try {
+    // Track with Vercel Analytics
+    if (typeof window !== 'undefined' && window.va) {
+      window.va('event', { name: 'signup_error', ...properties });
+    }
+    
+    // Track with Splitbee
+    if (typeof window !== 'undefined' && window.splitbee) {
+      window.splitbee.track('signup_error', properties);
+    }
+    
+    logger.info('Signup error tracked', properties);
+  } catch (error) {
+    logger.error('Failed to track signup error', error);
   }
 }
 
 /**
- * Track signup events
- * 
- * @param properties - Signup event properties
- */
-export function trackSignup(properties: {
-  email_domain?: string;
-  has_school?: boolean;
-  subscriber_id?: string;
-}) {
-  track('signup_event', properties);
-}
-
-/**
- * Track signup errors
- * 
- * @param properties - Error event properties
- */
-export function trackSignupError(properties: {
-  error_type: string;
-  email_domain?: string;
-}) {
-  track('signup_error', properties);
-}
-
-/**
- * Track call-to-action clicks
- * 
+ * Track call-to-action click events
  * @param buttonName - Name of the button clicked
- * @param section - Page section where the button is located
+ * @param section - Section where the button is located
  * @param additionalProps - Additional properties to track
  */
 export function trackCTAClick(
-  buttonName: string,
-  section: string,
-  additionalProps?: Record<string, unknown>
-) {
-  track('cta_click', {
-    button_name: buttonName,
-    section: section,
-    ...additionalProps
-  });
+  buttonName: string, 
+  section: string, 
+  additionalProps: AnalyticsProperties = {}
+): void {
+  try {
+    const properties = {
+      button_name: buttonName,
+      section,
+      timestamp: Date.now(),
+      ...additionalProps
+    };
+    
+    // Track with Vercel Analytics
+    if (typeof window !== 'undefined' && window.va) {
+      window.va('event', { name: 'cta_click', ...properties });
+    }
+    
+    // Track with Splitbee
+    if (typeof window !== 'undefined' && window.splitbee) {
+      window.splitbee.track('cta_click', properties);
+    }
+    
+    logger.info('CTA click tracked', properties);
+  } catch (error) {
+    logger.error('Failed to track CTA click', error);
+  }
+}
+
+/**
+ * Track page view events
+ * @param pageTitle - Title of the page
+ * @param pageUrl - URL of the page
+ * @param referrer - Referring page URL
+ */
+export function trackPageView(
+  pageTitle: string, 
+  pageUrl: string, 
+  referrer?: string
+): void {
+  try {
+    const properties = {
+      page_title: pageTitle,
+      page_url: pageUrl,
+      referrer: referrer || '',
+      timestamp: Date.now()
+    };
+    
+    // Track with Vercel Analytics
+    if (typeof window !== 'undefined' && window.va) {
+      window.va('event', { name: 'page_view', ...properties });
+    }
+    
+    // Track with Splitbee
+    if (typeof window !== 'undefined' && window.splitbee) {
+      window.splitbee.track('page_view', properties);
+    }
+    
+    logger.info('Page view tracked', properties);
+  } catch (error) {
+    logger.error('Failed to track page view', error);
+  }
 }
 
 /**
  * Track web vitals performance metrics
- * 
- * @param properties - Web vitals metric properties
+ * @param metricName - Name of the performance metric
+ * @param metricValue - Value of the metric
+ * @param metricRating - Rating of the metric (good, needs-improvement, poor)
  */
-export function trackWebVital(properties: {
-  metric_name: string;
-  metric_value: number;
-  metric_rating: 'good' | 'needs-improvement' | 'poor';
-  metric_id: string;
-  metric_delta: number;
-}) {
-  track('web_vital', properties);
+export function trackWebVital(
+  metricName: string, 
+  metricValue: number, 
+  metricRating: 'good' | 'needs-improvement' | 'poor'
+): void {
+  try {
+    const properties = {
+      metric_name: metricName,
+      metric_value: metricValue,
+      metric_rating: metricRating,
+      timestamp: Date.now()
+    };
+    
+    // Track with Vercel Analytics
+    if (typeof window !== 'undefined' && window.va) {
+      window.va('event', { name: 'web_vital', ...properties });
+    }
+    
+    // Track with Splitbee
+    if (typeof window !== 'undefined' && window.splitbee) {
+      window.splitbee.track('web_vital', properties);
+    }
+    
+    logger.info('Web vital tracked', properties);
+  } catch (error) {
+    logger.error('Failed to track web vital', error);
+  }
 }
 
 /**
- * Track page views
- * 
- * @param properties - Page view properties
+ * Initialize analytics tracking
+ * This function should be called on app initialization
  */
-export function trackPageView(properties?: {
-  page_title?: string;
-  page_url?: string;
-  referrer?: string;
-}) {
-  track('page_view', properties);
+export function initializeAnalytics(): void {
+  try {
+    // Track initial page view
+    if (typeof window !== 'undefined') {
+      trackPageView(
+        document.title,
+        window.location.href,
+        document.referrer
+      );
+    }
+    
+    logger.info('Analytics initialized');
+  } catch (error) {
+    logger.error('Failed to initialize analytics', error);
+  }
 }
 
-/**
- * Track thank you page views
- * 
- * @param properties - Thank you page properties
- */
-export function trackThankYouPageView(properties?: {
-  referrer?: string;
-  time_on_page?: number;
-}) {
-  track('thank_you_page_view', properties);
-}
-
-/**
- * Check if analytics platforms are available
- */
-export function getAnalyticsStatus() {
-  const status = {
-    vercel: true, // Vercel Analytics is always available when imported
-    splitbee: typeof window !== 'undefined' && !!window.splitbee,
-  };
-
-  return status;
+// Extend Window interface for TypeScript support
+declare global {
+  interface Window {
+    va?: (event: string, properties?: Record<string, unknown>) => void;
+    splitbee?: {
+      track: (event: string, properties?: Record<string, unknown>) => void;
+    };
+  }
 } 

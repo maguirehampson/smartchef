@@ -601,7 +601,7 @@ export default function SmartChefLandingPage() {
               className="mb-8 sm:mb-12"
             >
               <motion.div 
-                className="flex items-center justify-center mb-6 sm:mb-8"
+                className="flex items-center justify-center mb-4 sm:mb-6"
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
@@ -609,7 +609,7 @@ export default function SmartChefLandingPage() {
                 <motion.img
                   src="/savr-logo.png"
                   alt="Savr - AI That Gets Why You Eat"
-                  className="h-8 sm:h-10 md:h-12 lg:h-14 w-auto"
+                  className="h-6 sm:h-7 md:h-8 lg:h-10 w-auto"
                   animate={{ 
                     scale: [1, 1.02, 1]
                   }}

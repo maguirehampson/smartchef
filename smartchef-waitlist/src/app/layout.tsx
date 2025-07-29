@@ -223,6 +223,7 @@ export default function RootLayout({
         <link rel="preload" href="/savr-logo.png" as="image" type="image/png" />
         
         {/* Favicon and app icons for better branding */}
+        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
         <link rel="icon" href="/savr-logo.png" type="image/png" sizes="32x32" />
         <link rel="icon" href="/savr-logo.png" type="image/png" sizes="16x16" />
         <link rel="icon" href="/savr-logo.png" type="image/png" sizes="any" />

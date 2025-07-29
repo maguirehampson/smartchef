@@ -2,6 +2,5 @@
   "buildCommand": "cd smartchef-waitlist && npm install && npm run build",
   "outputDirectory": "smartchef-waitlist/.next",
   "installCommand": "cd smartchef-waitlist && npm install",
-  "framework": "nextjs",
-  "rootDirectory": "smartchef-waitlist"
+  "framework": "nextjs"
 } 

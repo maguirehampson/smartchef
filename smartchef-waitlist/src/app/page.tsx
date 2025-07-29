@@ -856,7 +856,7 @@ export default function SmartChefLandingPage() {
                   { text: "Friday night moods", icon: "🎉", color: "from-purple-500 to-pink-500" },
                   { text: "$14 in your bank account", icon: "💸", color: "from-red-500 to-orange-500" },
                   { text: "that weird leftover rice", icon: "🍚", color: "from-yellow-500 to-orange-500" },
-                  { text: "a craving you can&apos;t quite name", icon: "🤔", color: "from-blue-500 to-purple-500" }
+                  { text: "a craving you can't quite name", icon: "🤔", color: "from-blue-500 to-purple-500" }
                 ].map((item, index) => (
                   <motion.div
                     key={index}
@@ -941,8 +941,8 @@ export default function SmartChefLandingPage() {
               {[
                 {
                   step: "🧠 Step 1",
-                  title: "Tell SmartChef how you&apos;re feeling",
-                  description: "&quot;It&apos;s Sunday, I&apos;m hungover, I&apos;ve got $10 and no energy.&quot;",
+                  title: "Tell SmartChef how you're feeling",
+                  description: "\"It's Sunday, I'm hungover, I've got $10 and no energy.\"",
                   icon: <Brain className="w-6 h-6 sm:w-8 sm:h-8" />
                 },
                 {
@@ -1454,7 +1454,11 @@ export default function SmartChefLandingPage() {
         <footer className="py-8 sm:py-12 px-4 border-t border-white/10">
           <div className="max-w-6xl mx-auto text-center">
             <div className="flex items-center justify-center gap-2 sm:gap-3 mb-4">
-              <Brain className="w-6 h-6 sm:w-8 sm:h-8 text-purple-400" />
+              <img 
+                src="/savr-logo.png" 
+                alt="Savr Logo" 
+                className="w-32 h-32 sm:w-40 sm:h-40"
+              />
             </div>
             <p className="text-gray-400 text-sm sm:text-base">
               Contextual Culinary Intelligence for real life.

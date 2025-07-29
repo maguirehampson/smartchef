@@ -1,7 +1,7 @@
 /**
- * SmartChef Waitlist Landing Page
+ * Savr Waitlist Landing Page
  * 
- * This is the main landing page component for the SmartChef waitlist application.
+ * This is the main landing page component for the Savr waitlist application.
  * It provides a comprehensive marketing experience with animated sections, interactive
  * chat demo, email signup form, and analytics tracking.
  * 
@@ -15,7 +15,7 @@
  * - Performance optimized with Next.js best practices
  * 
  * Requirements covered:
- * - 1.1: Complete SmartChef landing page with all sections
+ * - 1.1: Complete Savr landing page with all sections
  * - 1.2: Responsive design for all device sizes
  * - 1.3: Smooth animations and transitions
  * - 1.4: Smooth scroll navigation
@@ -28,7 +28,7 @@
  * - 3.4: Splitbee script inclusion
  * - 5.4: TypeScript for type safety
  * 
- * @author SmartChef Team
+ * @author Savr Team
  * @version 1.0.0
  */
 
@@ -654,7 +654,7 @@ export default function SmartChefLandingPage() {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.6, delay: 0.4 }}
                 >
-                  SmartChef
+                  Savr
                 </motion.h1>
               </motion.div>
               

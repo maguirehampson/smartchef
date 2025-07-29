@@ -1,6 +1,6 @@
-# SmartChef Waitlist Landing Page
+# Savr Waitlist Landing Page
 
-A high-converting, production-ready Next.js landing page for the SmartChef AI cooking assistant waitlist. Features responsive design, animated UI elements, email capture with MailerLite integration, and comprehensive analytics tracking.
+A high-converting, production-ready Next.js landing page for the Savr AI cooking assistant waitlist. Features responsive design, animated UI elements, email capture with MailerLite integration, and comprehensive analytics tracking.
 
 ## 🚀 Features
 
@@ -36,7 +36,7 @@ A high-converting, production-ready Next.js landing page for the SmartChef AI co
 1. **Clone the repository**
    ```bash
    git clone <repository-url>
-   cd smartchef-waitlist
+   cd savr-waitlist
    ```
 
 2. **Install dependencies**
@@ -73,7 +73,7 @@ A high-converting, production-ready Next.js landing page for the SmartChef AI co
 
 ### Step 2: Get Your Group ID
 1. In MailerLite, go to **Subscribers** → **Groups**
-2. Create a new group called "SmartChef Waitlist" (or use existing)
+2. Create a new group called "Savr Waitlist" (or use existing)
 3. Click on the group and copy the Group ID from the URL
 4. Add it to `.env.local` as `MAILERLITE_GROUP_ID`
 

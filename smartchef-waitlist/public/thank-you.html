@@ -1,7 +1,7 @@
 <!--
-SmartChef Waitlist Thank You Page
+Savr Waitlist Thank You Page
 
-This is the confirmation page users see after successfully joining the SmartChef waitlist.
+This is the confirmation page users see after successfully joining the Savr waitlist.
 It provides confirmation of their signup, maintains brand consistency, and includes
 social sharing functionality to encourage viral growth.
 
@@ -15,7 +15,7 @@ Key Features:
 
 Requirements covered:
 - 4.1: Redirect to /thank-you.html after successful signup
-- 4.2: Confirmation message "You're on the list. SmartChef is cooking something special."
+- 4.2: Confirmation message "You're on the list. Savr is cooking something special."
 - 4.3: Consistent branding with main landing page
 - 4.4: Share with friends button (stubbed for future implementation)
 - 4.5: Analytics tracking for cta_click events
@@ -36,7 +36,7 @@ TODO: Before deployment, ensure:
 - Social sharing URLs point to production domain
 - Favicon.ico exists in public directory
 
-@author SmartChef Team
+@author Savr Team
 @version 1.0.0
 -->
 <!DOCTYPE html>
@@ -44,21 +44,21 @@ TODO: Before deployment, ensure:
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thank You - SmartChef Waitlist</title>
-    <meta name="description" content="Thank you for joining the SmartChef waitlist! You're on the list and will be the first to know when we launch.">
+    <title>Thank You - Savr Waitlist</title>
+    <meta name="description" content="Thank you for joining the Savr waitlist! You're on the list and will be the first to know when we launch.">
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://smartchef-waitlist.vercel.app/thank-you.html">
-    <meta property="og:title" content="Thank You - SmartChef Waitlist">
-    <meta property="og:description" content="Thank you for joining the SmartChef waitlist! You're on the list and will be the first to know when we launch.">
+    <meta property="og:url" content="https://savr-waitlist.vercel.app/thank-you.html">
+    <meta property="og:title" content="Thank You - Savr Waitlist">
+    <meta property="og:description" content="Thank you for joining the Savr waitlist! You're on the list and will be the first to know when we launch.">
     <meta property="og:image" content="/og-image.svg">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://smartchef-waitlist.vercel.app/thank-you.html">
-    <meta property="twitter:title" content="Thank You - SmartChef Waitlist">
-    <meta property="twitter:description" content="Thank you for joining the SmartChef waitlist! You're on the list and will be the first to know when we launch.">
+    <meta property="twitter:url" content="https://savr-waitlist.vercel.app/thank-you.html">
+    <meta property="twitter:title" content="Thank You - Savr Waitlist">
+    <meta property="twitter:description" content="Thank you for joining the Savr waitlist! You're on the list and will be the first to know when we launch.">
     <meta property="twitter:image" content="/og-image.svg">
 
     <!-- Favicon -->
@@ -264,7 +264,7 @@ TODO: Before deployment, ensure:
                 <h1 class="thank-you-title">You're on the list!</h1>
                 
                 <p class="thank-you-message">
-                    SmartChef is cooking something special.
+                    Savr is cooking something special.
                 </p>
                 
                 <p class="thank-you-submessage">
@@ -278,7 +278,7 @@ TODO: Before deployment, ensure:
                 </button>
                 
                 <div>
-                    <a href="/" class="back-link">← Back to SmartChef</a>
+                    <a href="/" class="back-link">← Back to Savr</a>
                 </div>
             </div>
         </div>
@@ -286,7 +286,7 @@ TODO: Before deployment, ensure:
 
     <script>
         /**
-         * SmartChef Thank You Page JavaScript
+         * Savr Thank You Page JavaScript
          * 
          * Handles analytics tracking, social sharing functionality, and
          * interactive animations for the thank you confirmation page.
@@ -333,8 +333,8 @@ TODO: Before deployment, ensure:
             // Check if Web Share API is supported (primarily mobile browsers)
             if (navigator.share) {
                 navigator.share({
-                    title: 'SmartChef - AI That Gets Why You Eat',
-                    text: 'Check out SmartChef, the first AI cooking assistant that understands your mood, budget, and cravings!',
+                    title: 'Savr - AI That Gets Why You Eat',
+                    text: 'Check out Savr, the first AI cooking assistant that understands your mood, budget, and cravings!',
                     url: window.location.origin
                 }).catch(err => {
                     console.log('Web Share API error:', err);
@@ -354,7 +354,7 @@ TODO: Before deployment, ensure:
          */
         function fallbackShare() {
             const shareUrl = window.location.origin;
-            const shareText = 'Check out SmartChef, the first AI cooking assistant that understands your mood, budget, and cravings!';
+            const shareText = 'Check out Savr, the first AI cooking assistant that understands your mood, budget, and cravings!';
             
             // Try modern Clipboard API first
             if (navigator.clipboard && navigator.clipboard.writeText) {

@@ -74,10 +74,10 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   // Enhanced SEO metadata with performance considerations
   title: {
-    default: "SmartChef - AI That Gets Why You Eat",
-    template: "%s | SmartChef"
+    default: "Savr - AI That Gets Why You Eat",
+    template: "%s | Savr"
   },
-  description: "Join the waitlist for SmartChef, the first AI cooking assistant that understands your mood, budget, and cravings. Contextual culinary intelligence for real life.",
+  description: "Join the waitlist for Savr, the first AI cooking assistant that understands your mood, budget, and cravings. Contextual culinary intelligence for real life.",
   keywords: [
     "AI cooking assistant",
     "smart recipes", 
@@ -92,10 +92,10 @@ export const metadata: Metadata = {
   ],
   
   // Authorship and publication info
-  authors: [{ name: "SmartChef Team", url: "https://smartchef.ai" }],
-  creator: "SmartChef",
-  publisher: "SmartChef",
-  applicationName: "SmartChef Waitlist",
+  authors: [{ name: "Savr Team", url: "https://savr.ai" }],
+  creator: "Savr",
+  publisher: "Savr",
+  applicationName: "Savr Waitlist",
   
   // Disable automatic detection to prevent layout shifts
   formatDetection: {
@@ -105,7 +105,7 @@ export const metadata: Metadata = {
   },
   
   // Base URL for relative paths - production ready
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://smartchef-waitlist.vercel.app'),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://savr-waitlist.vercel.app'),
   
   // Canonical URL and alternates
   alternates: {
@@ -117,7 +117,7 @@ export const metadata: Metadata = {
   
   // Enhanced Open Graph metadata
   openGraph: {
-    title: "SmartChef - AI That Gets Why You Eat",
+    title: "Savr - AI That Gets Why You Eat",
     description: "Join the waitlist for SmartChef, the first AI cooking assistant that understands your mood, budget, and cravings. Contextual culinary intelligence for real life.",
     url: '/',
     siteName: 'SmartChef',
@@ -138,11 +138,11 @@ export const metadata: Metadata = {
   // Enhanced Twitter Card metadata
   twitter: {
     card: 'summary_large_image',
-    title: "SmartChef - AI That Gets Why You Eat",
+    title: "Savr - AI That Gets Why You Eat",
     description: "The first AI cooking assistant that understands your mood, budget, and cravings. Join the waitlist for contextual culinary intelligence.",
     images: ['/og-image.svg'],
-    creator: '@smartchef',
-    site: '@smartchef',
+    creator: '@savr',
+    site: '@savr',
   },
   
   // Enhanced search engine crawler instructions
@@ -167,7 +167,7 @@ export const metadata: Metadata = {
   // App-specific metadata
   appleWebApp: {
     capable: true,
-    title: 'SmartChef',
+    title: 'Savr',
     statusBarStyle: 'black-translucent',
   },
   
@@ -180,7 +180,7 @@ export const metadata: Metadata = {
   
   // Additional structured data
   other: {
-    'application-name': 'SmartChef Waitlist',
+    'application-name': 'Savr Waitlist',
     'msapplication-TileColor': '#7c3aed',
     'theme-color': '#000000',
   },
@@ -253,9 +253,9 @@ export default function RootLayout({
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "WebApplication",
-              "name": "SmartChef",
+              "name": "Savr",
               "description": "The first AI cooking assistant that understands your mood, budget, and cravings. Contextual culinary intelligence for real life.",
-              "url": process.env.NEXT_PUBLIC_SITE_URL || "https://smartchef-waitlist.vercel.app",
+              "url": process.env.NEXT_PUBLIC_SITE_URL || "https://savr-waitlist.vercel.app",
               "applicationCategory": "LifestyleApplication",
               "operatingSystem": "Web",
               "offers": {
@@ -265,11 +265,11 @@ export default function RootLayout({
               },
               "author": {
                 "@type": "Organization",
-                "name": "SmartChef Team"
+                "name": "Savr Team"
               },
               "publisher": {
                 "@type": "Organization",
-                "name": "SmartChef"
+                "name": "Savr"
               }
             })
           }}

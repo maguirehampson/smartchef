@@ -1,5 +1,5 @@
 /**
- * SmartChef Waitlist Signup API Route
+ * Savr Waitlist Signup API Route
  * 
  * This API route handles form submission to MailerLite API with proper error handling,
  * duplicate submission prevention, and environment variable configuration.

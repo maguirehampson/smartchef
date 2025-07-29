@@ -223,8 +223,9 @@ export default function RootLayout({
         <link rel="preload" href="/savr-logo.png" as="image" type="image/png" />
         
         {/* Favicon and app icons for better branding */}
-        <link rel="icon" href="/favicon.png" sizes="any" />
-        <link rel="icon" href="/savr-logo.png" type="image/png" />
+        <link rel="icon" href="/savr-logo.png" type="image/png" sizes="32x32" />
+        <link rel="icon" href="/savr-logo.png" type="image/png" sizes="16x16" />
+        <link rel="icon" href="/savr-logo.png" type="image/png" sizes="any" />
         <link rel="apple-touch-icon" href="/savr-logo.png" />
         <link rel="manifest" href="/manifest.json" />
         

@@ -1,0 +1,14 @@
+<svg width="908" height="640" viewBox="0 0 908 640" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Purple circle background -->
+  <circle cx="252" cy="320" r="252" fill="#C53AAE"/>
+  
+  <!-- Chef hat icon -->
+  <path d="M252 180C285 180 312 207 312 240C312 250 309 259 304 267C325 275 340 295 340 320V340C340 350 335 355 325 355H179C169 355 164 350 164 340V320C164 295 179 275 200 267C195 259 192 250 192 240C192 207 219 180 252 180Z" 
+        fill="white" stroke="white" stroke-width="8"/>
+  
+  <!-- Chef hat band -->
+  <rect x="164" y="340" width="176" height="30" rx="15" fill="white" stroke="white" stroke-width="4"/>
+  
+  <!-- Savr text -->
+  <text x="420" y="480" font-family="Arial, sans-serif" font-size="280" font-weight="bold" fill="#C53AAE">savr</text>
+</svg>

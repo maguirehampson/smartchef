@@ -630,32 +630,24 @@ export default function SmartChefLandingPage() {
               className="mb-8 sm:mb-12"
             >
               <motion.div 
-                className="flex items-center justify-center gap-2 sm:gap-3 mb-6 sm:mb-8"
+                className="flex items-center justify-center mb-6 sm:mb-8"
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
               >
-                <motion.div
+                <motion.img
+                  src="/savr-logo.svg"
+                  alt="Savr - AI That Gets Why You Eat"
+                  className="h-16 sm:h-20 md:h-24 lg:h-28 w-auto"
                   animate={{ 
-                    rotate: [0, 5, -5, 0],
-                    scale: [1, 1.05, 1]
+                    scale: [1, 1.02, 1]
                   }}
                   transition={{ 
                     duration: 4,
                     repeat: Infinity,
                     ease: "easeInOut"
                   }}
-                >
-                  <Brain className="w-8 h-8 sm:w-12 sm:h-12 text-purple-400" />
-                </motion.div>
-                <motion.h1 
-                  className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight"
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.6, delay: 0.4 }}
-                >
-                  Savr
-                </motion.h1>
+                />
               </motion.div>
               
               {/* Main Headline with Word-by-Word Animation */}
@@ -1215,7 +1207,7 @@ export default function SmartChefLandingPage() {
                   <div className="border-t border-white/10 p-4 sm:p-6">
                     <div className="flex items-center gap-3">
                       <div className="flex-1 bg-white/5 border border-white/10 rounded-2xl px-4 py-3">
-                        <span className="text-gray-400 text-sm">Try SmartChef yourself...</span>
+                        <span className="text-gray-400 text-sm">Try Savr Soon...</span>
                       </div>
                       <motion.button
                         className="bg-gradient-to-r from-purple-500 to-pink-600 p-3 rounded-xl shadow-lg"

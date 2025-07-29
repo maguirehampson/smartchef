@@ -593,7 +593,7 @@ export default function SmartChefLandingPage() {
         {/* Enhanced Hero Section with Advanced Animations */}
         <section className="min-h-screen flex items-center justify-center px-4 py-8 sm:py-12 relative">
           <div className="max-w-6xl mx-auto text-center">
-            {/* Logo and Brand Name with Staggered Animation */}
+            {/* Header with Logo and Brand Name */}
             <motion.div
               initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: 1, y: 0 }}
@@ -601,7 +601,7 @@ export default function SmartChefLandingPage() {
               className="mb-8 sm:mb-12"
             >
               <motion.div 
-                className="flex items-center justify-center mb-4 sm:mb-6"
+                className="flex items-center justify-center h-16 px-4 py-2"
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
@@ -609,7 +609,7 @@ export default function SmartChefLandingPage() {
                 <motion.img
                   src="/savr-logo.png"
                   alt="Savr - AI That Gets Why You Eat"
-                  className="h-6 sm:h-7 md:h-8 lg:h-10 w-auto"
+                  className="w-[360px] h-[360px]"
                   animate={{ 
                     scale: [1, 1.02, 1]
                   }}
@@ -620,6 +620,7 @@ export default function SmartChefLandingPage() {
                   }}
                 />
               </motion.div>
+            </motion.div>
               
               {/* Main Headline with Word-by-Word Animation */}
               <motion.h2 
@@ -783,7 +784,6 @@ export default function SmartChefLandingPage() {
                   </motion.div>
                 </motion.button>
               </motion.div>
-            </motion.div>
 
             {/* Stats with Staggered Entrance */}
             <motion.div
@@ -1455,7 +1455,6 @@ export default function SmartChefLandingPage() {
           <div className="max-w-6xl mx-auto text-center">
             <div className="flex items-center justify-center gap-2 sm:gap-3 mb-4">
               <Brain className="w-6 h-6 sm:w-8 sm:h-8 text-purple-400" />
-              <span className="text-xl sm:text-2xl font-black">SmartChef</span>
             </div>
             <p className="text-gray-400 text-sm sm:text-base">
               Contextual Culinary Intelligence for real life.

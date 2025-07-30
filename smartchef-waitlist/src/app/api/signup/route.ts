@@ -19,7 +19,7 @@ import { validateEmailFormat, sanitizeInput } from '../../../lib/validation';
 import { createLogger } from '../../../lib/logger';
 
 // Configuration constants
-const MAILERLITE_API_BASE_URL = 'https://api.mailerlite.com/api/v2';
+const MAILERLITE_API_BASE_URL = 'https://connect.mailerlite.com/api';
 
 // Error types for consistent error handling
 const ERROR_TYPES = {
@@ -47,9 +47,11 @@ interface MailerLiteSubscriber {
 }
 
 interface MailerLiteResponse {
-  id: number;
-  email: string;
-  status: 'active' | 'unsubscribed' | 'bounced';
+  data: {
+    id: string;
+    email: string;
+    status: 'active' | 'unsubscribed' | 'bounced';
+  };
 }
 
 // Create logger for this module
@@ -65,25 +67,39 @@ function validateEnvironmentVariables() {
   
   // Check if environment variables exist
   if (!apiKey || !groupId) {
-    logger.error('Missing required environment variables');
+    const missingVars = [];
+    if (!apiKey) missingVars.push('MAILERLITE_API_KEY');
+    if (!groupId) missingVars.push('MAILERLITE_GROUP_ID');
+    
+    logger.error(`Missing required environment variables: ${missingVars.join(', ')}`);
+    logger.error('Please set up your environment variables by:');
+    logger.error('1. Creating a .env.local file in the project root');
+    logger.error('2. Adding MAILERLITE_API_KEY=your_jwt_token_here');
+    logger.error('3. Adding MAILERLITE_GROUP_ID=your_group_id_here');
+    logger.error('4. Restarting your development server');
     throw new Error(ERROR_TYPES.MISSING_CONFIG);
   }
   
   // Check for placeholder values
-  if (apiKey.startsWith('TODO_') || groupId.startsWith('TODO_')) {
+  if (apiKey.startsWith('TODO_') || groupId.startsWith('TODO_') || 
+      apiKey.includes('your_') || groupId.includes('your_') ||
+      apiKey.includes('please_replace')) {
     logger.error('Environment variables contain placeholder values');
+    logger.error('Please replace placeholder values with actual MailerLite credentials');
     throw new Error(ERROR_TYPES.MISSING_CONFIG);
   }
   
-  // Validate API key format (should be a reasonable length)
-  if (apiKey.length < 10 || apiKey.length > 100) {
-    logger.error('Invalid API key format');
+  // Validate API key format (JWT token should be reasonable length)
+  if (apiKey.length < 100 || apiKey.length > 2000) {
+    logger.error(`Invalid API key format: ${apiKey ? apiKey.substring(0, 10) + '***' : 'undefined'}`);
+    logger.error('JWT API key should be between 100-2000 characters');
     throw new Error(ERROR_TYPES.MISSING_CONFIG);
   }
   
   // Validate group ID format (should be numeric)
   if (!/^\d+$/.test(groupId)) {
-    logger.error('Invalid group ID format');
+    logger.error(`Invalid group ID format: ${groupId}`);
+    logger.error('Group ID should be a numeric value from MailerLite');
     throw new Error(ERROR_TYPES.MISSING_CONFIG);
   }
   
@@ -112,25 +128,20 @@ function getConfig() {
 async function addSubscriberToMailerLite(subscriberData: SignupRequest): Promise<MailerLiteResponse> {
   const config = getConfig();
   
-  const requestBody: MailerLiteSubscriber = {
+  const requestBody = {
     email: subscriberData.email,
-    fields: {},
+    fields: subscriberData.school ? { school: subscriberData.school } : {},
     groups: [config.groupId]
   };
-
-  // Add optional school field if provided
-  if (subscriberData.school) {
-    requestBody.fields!.school = subscriberData.school;
-  }
 
   try {
     const response = await fetch(`${MAILERLITE_API_BASE_URL}/subscribers`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-MailerLite-ApiKey': config.apiKey,
+        'Authorization': `Bearer ${config.apiKey}`,
         'Accept': 'application/json',
-        'User-Agent': 'Savr-Waitlist/1.0'
+        'User-Agent': 'SmartChef-Waitlist/1.0'
       },
       body: JSON.stringify(requestBody),
       // Add timeout to prevent hanging requests
@@ -147,7 +158,8 @@ async function addSubscriberToMailerLite(subscriberData: SignupRequest): Promise
       const errorData = await response.json();
       // Check if it's a duplicate email error
       if (errorData.error && errorData.error.message && 
-          errorData.error.message.includes('already exists')) {
+          (errorData.error.message.includes('already exists') || 
+           errorData.error.message.includes('already subscribed'))) {
         logger.info('Duplicate email attempt', { email: subscriberData.email.substring(0, 5) + '***' });
         throw new Error(ERROR_TYPES.DUPLICATE_EMAIL);
       }
@@ -156,11 +168,13 @@ async function addSubscriberToMailerLite(subscriberData: SignupRequest): Promise
     }
 
     if (!response.ok) {
-      logger.error('MailerLite API error', { status: response.status });
+      const errorText = await response.text();
+      logger.error('MailerLite API error', { status: response.status, error: errorText });
       throw new Error(ERROR_TYPES.API_ERROR);
     }
 
-    return await response.json();
+    const responseData = await response.json();
+    return responseData;
   } catch (error) {
     if (error instanceof Error && error.name === 'AbortError') {
       logger.error('MailerLite API request timeout');
@@ -224,18 +238,19 @@ export async function POST(request: NextRequest) {
     const subscriberData = { email, school };
     const response = await addSubscriberToMailerLite(subscriberData);
 
-    // Log successful signup (without sensitive data)
-    logger.info('Successful signup', { 
+    // Log the full response for debugging
+    logger.info('MailerLite API response', { 
+      response: JSON.stringify(response),
       emailDomain: email.split('@')[1],
-      hasSchool: !!school,
-      subscriberId: response.id 
+      hasSchool: !!school
     });
 
-    // Create success response
+    // Create success response - handle different response formats
+    const subscriberId = response.data?.id || response.id || 'unknown';
     const successResponse = NextResponse.json({
       success: true,
       message: 'Successfully added to waitlist',
-      subscriber_id: response.id
+      subscriber_id: subscriberId
     });
 
     // Add rate limit headers to successful response
@@ -251,7 +266,11 @@ export async function POST(request: NextRequest) {
       switch (error.message) {
         case ERROR_TYPES.MISSING_CONFIG:
           return NextResponse.json(
-            { error: ERROR_TYPES.MISSING_CONFIG, message: 'Service temporarily unavailable. Please try again later.' },
+            { 
+              error: ERROR_TYPES.MISSING_CONFIG, 
+              message: 'Service temporarily unavailable. Please try again later.',
+              details: 'MailerLite API configuration is missing. Check server logs for setup instructions.'
+            },
             { status: 500 }
           );
         
@@ -307,7 +326,7 @@ export async function OPTIONS() {
   return new NextResponse(null, {
     status: 200,
     headers: {
-      'Access-Control-Allow-Origin': process.env.NEXT_PUBLIC_SITE_URL || 'https://savr-waitlist.vercel.app',
+      'Access-Control-Allow-Origin': process.env.NEXT_PUBLIC_SITE_URL || 'https://smartchef.ai',
       'Access-Control-Allow-Methods': 'POST, OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type',
       'Access-Control-Max-Age': '86400',

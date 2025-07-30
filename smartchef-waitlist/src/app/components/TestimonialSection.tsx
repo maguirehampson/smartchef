@@ -24,6 +24,7 @@ import { Star } from 'lucide-react';
  * Testimonial data interface
  */
 interface Testimonial {
+  id: string;
   name: string;
   role: string;
   content: string;
@@ -35,18 +36,21 @@ interface Testimonial {
  */
 const testimonials: Testimonial[] = [
   {
+    id: "busy-parent",
     name: "Anonymous User",
     role: "Busy Parent",
     content: "Finally, an AI that gets that I need dinner ideas for cranky kids after a 12-hour workday, not gourmet recipes I'll never make.",
     rating: 5
   },
   {
+    id: "college-student",
     name: "Anonymous User",
     role: "College Student",
     content: "SmartChef actually understands my $15 weekly grocery budget and my dorm kitchen limitations. Game changer.",
     rating: 5
   },
   {
+    id: "working-professional",
     name: "Anonymous User",
     role: "Working Professional",
     content: "It's like having a friend who actually knows what you want to eat when you're too tired to think. Revolutionary.",
@@ -82,7 +86,7 @@ const TestimonialSection: React.FC = React.memo(() => {
         <div className="grid md:grid-cols-3 gap-6 sm:gap-8">
           {testimonials.map((testimonial, index) => (
             <motion.div
-              key={testimonial.name}
+              key={testimonial.id}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-50px" }}

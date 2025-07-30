@@ -104,8 +104,15 @@ export const metadata: Metadata = {
     telephone: false,
   },
   
+  // Favicon configuration
+  icons: {
+    icon: '/favicon-v2.ico?v=2',
+    shortcut: '/favicon-v2.ico?v=2',
+    apple: '/favicon-v2.ico?v=2',
+  },
+  
   // Base URL for relative paths - production ready
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://savr-waitlist.vercel.app'),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://smartchef.ai'),
   
   // Canonical URL and alternates
   alternates: {
@@ -123,11 +130,11 @@ export const metadata: Metadata = {
     siteName: 'SmartChef',
     images: [
       {
-        url: '/savr-logo.png',
+        url: '/favicon-v2.ico',
         width: 908,
         height: 640,
         alt: 'Savr - AI That Gets Why You Eat',
-        type: 'image/png',
+        type: 'image/x-icon',
       },
     ],
     locale: 'en_US',
@@ -140,7 +147,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: "Savr - AI That Gets Why You Eat",
     description: "The first AI cooking assistant that understands your mood, budget, and cravings. Join the waitlist for contextual culinary intelligence.",
-    images: ['/savr-logo.png'],
+    images: ['/favicon-v2.ico'],
     creator: '@savr',
     site: '@savr',
   },
@@ -220,14 +227,14 @@ export default function RootLayout({
         
         {/* Preload critical resources */}
         <link rel="preload" href="/style.css" as="style" />
-        <link rel="preload" href="/savr-logo.png" as="image" type="image/png" />
+        <link rel="preload" href="/favicon-v2.ico?v=2" as="image" type="image/x-icon" />
         
         {/* Favicon and app icons for better branding */}
-        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
-        <link rel="icon" href="/savr-logo.png" type="image/png" sizes="32x32" />
-        <link rel="icon" href="/savr-logo.png" type="image/png" sizes="16x16" />
-        <link rel="icon" href="/savr-logo.png" type="image/png" sizes="any" />
-        <link rel="apple-touch-icon" href="/savr-logo.png" />
+        <link rel="icon" href="/favicon-v2.ico?v=2" type="image/x-icon" />
+        <link rel="icon" href="/favicon-v2.ico?v=2" type="image/png" sizes="32x32" />
+        <link rel="icon" href="/favicon-v2.ico?v=2" type="image/png" sizes="16x16" />
+        <link rel="icon" href="/favicon-v2.ico?v=2" type="image/png" sizes="any" />
+        <link rel="apple-touch-icon" href="/favicon-v2.ico?v=2" />
         <link rel="manifest" href="/manifest.json" />
         
         {/* Performance hint: Prefetch likely next page */}
@@ -257,7 +264,7 @@ export default function RootLayout({
               "@type": "WebApplication",
               "name": "Savr",
               "description": "The first AI cooking assistant that understands your mood, budget, and cravings. Contextual culinary intelligence for real life.",
-              "url": process.env.NEXT_PUBLIC_SITE_URL || "https://savr-waitlist.vercel.app",
+              "url": process.env.NEXT_PUBLIC_SITE_URL || "https://smartchef.ai",
               "applicationCategory": "LifestyleApplication",
               "operatingSystem": "Web",
               "offers": {

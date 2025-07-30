@@ -48,9 +48,18 @@ A high-converting, production-ready Next.js landing page for the Savr AI cooking
 
 3. **Environment Configuration**
    
-   Copy the environment template:
+   **IMPORTANT**: You need to set up your environment variables before the app will work.
+   
+   **Quick Setup (Recommended):**
    ```bash
-   cp .env.local.template .env.local
+   npm run setup-env
+   ```
+   This will create a `.env.local` file with the correct structure.
+   
+   **Manual Setup:**
+   Create a `.env.local` file in the project root:
+   ```bash
+   touch .env.local
    ```
 
    **REQUIRED**: Update `.env.local` with your configuration:
@@ -62,6 +71,8 @@ A high-converting, production-ready Next.js landing page for the Savr AI cooking
    # Analytics Configuration (Optional)
    NEXT_PUBLIC_SPLITBEE_TOKEN=your_splitbee_token_here
    ```
+
+   **📖 For detailed setup instructions, see [ENVIRONMENT_SETUP.md](./ENVIRONMENT_SETUP.md)**
 
 ## 🔑 MailerLite Setup (REQUIRED)
 
@@ -136,7 +147,7 @@ smartchef-waitlist/
 │   ├── scripts/signup.js          # Client-side form handling
 │   ├── style.css                  # Custom CSS utilities
 │   └── thank-you.html             # Success confirmation page
-├── .env.local.template            # Environment variables template
+├── ENVIRONMENT_SETUP.md           # Environment setup guide
 ├── tailwind.config.ts             # Tailwind CSS configuration
 └── next.config.ts                 # Next.js configuration
 ```

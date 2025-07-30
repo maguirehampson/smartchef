@@ -375,10 +375,10 @@ export default function SmartChefLandingPage() {
       const result = await response.json();
 
       // Handle non-successful responses with specific error messages
-      if (!response.ok) {
+      if (!response.ok || !result.success) {
         let errorMessage = 'Something went wrong. Please try again.';
         
-        // Provide specific error messages based on response status
+        // Provide specific error messages based on response status and error type
         if (response.status === 400 && result.error === 'DUPLICATE_EMAIL') {
           errorMessage = 'This email is already on our waitlist!';
         } else if (response.status === 429) {
@@ -387,6 +387,8 @@ export default function SmartChefLandingPage() {
           errorMessage = 'Service temporarily unavailable. Please try again later.';
         } else if (!navigator.onLine) {
           errorMessage = 'Connection issue. Please check your internet and try again.';
+        } else if (result.error) {
+          errorMessage = result.message || errorMessage;
         }
         
         throw new Error(errorMessage);
@@ -404,11 +406,6 @@ export default function SmartChefLandingPage() {
       // Update UI to success state
       setSignupForm(prev => ({ ...prev, isSubmitted: true, isLoading: false }));
       setSignupCount(prev => prev + 1); // Increment social proof counter
-      
-      // Redirect to thank-you page after brief success display (2 seconds)
-      setTimeout(() => {
-        window.location.href = '/thank-you.html';
-      }, 2000);
       
     } catch (error) {
       // Track failed signup attempts for debugging and optimization
@@ -1367,29 +1364,22 @@ export default function SmartChefLandingPage() {
                   </div>
                   
                   {/* General Error Display */}
+                  {/* Error Message */}
                   {signupForm.error && (
-                    <motion.div
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className="bg-red-500/10 border border-red-500/20 rounded-2xl p-4 text-red-400 text-sm font-medium"
-                    >
+                    <div className="bg-red-500/10 border border-red-500/20 rounded-2xl p-4 text-red-400 text-sm font-medium">
                       {signupForm.error}
-                    </motion.div>
+                    </div>
                   )}
                   
                   {/* Success Message */}
                   {signupForm.isSubmitted && (
-                    <motion.div
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      className="bg-green-500/10 border border-green-500/20 rounded-2xl p-4 text-green-400 text-sm font-medium text-center"
-                    >
+                    <div className="bg-green-500/10 border border-green-500/20 rounded-2xl p-4 text-green-400 text-sm font-medium text-center">
                       ✨ Welcome to the waitlist! You&apos;ll be the first to know when SmartChef is ready.
-                    </motion.div>
+                    </div>
                   )}
                   
                   {/* Submit Button */}
-                  <motion.button
+                  <button
                     type="submit"
                     onClick={() => trackCTAClick('join_waitlist_form', 'signup_form')}
                     disabled={signupForm.isLoading || signupForm.isSubmitted}
@@ -1400,50 +1390,28 @@ export default function SmartChefLandingPage() {
                         ? 'bg-gradient-to-r from-gray-600 to-gray-700 text-white cursor-not-allowed'
                         : 'bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white cursor-pointer shadow-purple-500/25'
                     }`}
-                    whileHover={!signupForm.isLoading && !signupForm.isSubmitted ? { scale: 1.02 } : {}}
-                    whileTap={!signupForm.isLoading && !signupForm.isSubmitted ? { scale: 0.98 } : {}}
                   >
-                    {signupForm.isLoading && (
-                      <motion.div
-                        className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0"
-                        animate={{ x: ["-100%", "100%"] }}
-                        transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                      />
-                    )}
                     <span className="relative z-10 flex items-center justify-center gap-2">
-                      {signupForm.isLoading ? (
+                      {signupForm.isLoading && (
                         <>
-                          <motion.div
-                            className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full"
-                            animate={{ rotate: 360 }}
-                            transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                          />
+                          <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                           Joining...
                         </>
-                      ) : signupForm.isSubmitted ? (
+                      )}
+                      {signupForm.isSubmitted && (
                         <>
-                          <motion.span
-                            initial={{ scale: 0 }}
-                            animate={{ scale: 1 }}
-                            transition={{ delay: 0.2 }}
-                          >
-                            ✨
-                          </motion.span>
+                          <span>✨</span>
                           Welcome to the waitlist!
                         </>
-                      ) : (
+                      )}
+                      {!signupForm.isLoading && !signupForm.isSubmitted && (
                         <>
                           Join the Waitlist
-                          <motion.div
-                            animate={{ x: [0, 5, 0] }}
-                            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                          >
-                            <ArrowRight className="w-5 h-5" />
-                          </motion.div>
+                          <ArrowRight className="w-5 h-5" />
                         </>
                       )}
                     </span>
-                  </motion.button>
+                  </button>
                 </form>
               </div>
             </motion.div>

@@ -123,7 +123,7 @@ const nextConfig: NextConfig = {
         headers: [
           {
             key: 'Access-Control-Allow-Origin',
-            value: process.env.NEXT_PUBLIC_SITE_URL || 'https://savr-waitlist.vercel.app',
+            value: process.env.NEXT_PUBLIC_SITE_URL || 'https://smartchef.ai',
           },
           {
             key: 'Access-Control-Allow-Methods',

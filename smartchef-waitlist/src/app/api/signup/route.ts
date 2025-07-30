@@ -128,6 +128,16 @@ async function addSubscriberToMailerLite(subscriberData: SignupRequest): Promise
     groups: [config.groupId]
   };
 
+  // Log the request details for debugging
+  logger.info('MailerLite API request', {
+    url: `${MAILERLITE_API_BASE_URL}/subscribers`,
+    method: 'POST',
+    requestBody: { ...requestBody, email: requestBody.email.substring(0, 5) + '***' },
+    groupId: config.groupId,
+    hasApiKey: !!config.apiKey,
+    apiKeyLength: config.apiKey?.length || 0
+  });
+
   try {
     const response = await fetch(`${MAILERLITE_API_BASE_URL}/subscribers`, {
       method: 'POST',
@@ -135,7 +145,7 @@ async function addSubscriberToMailerLite(subscriberData: SignupRequest): Promise
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${config.apiKey}`,
         'Accept': 'application/json',
-        'User-Agent': 'SmartChef-Waitlist/1.0'
+        'User-Agent': 'Savr-Waitlist/1.0'
       },
       body: JSON.stringify(requestBody),
       // Add timeout to prevent hanging requests
@@ -163,7 +173,13 @@ async function addSubscriberToMailerLite(subscriberData: SignupRequest): Promise
 
     if (!response.ok) {
       const errorText = await response.text();
-      logger.error('MailerLite API error', { status: response.status, error: errorText });
+      logger.error('MailerLite API error', { 
+        status: response.status, 
+        statusText: response.statusText,
+        error: errorText,
+        url: response.url,
+        headers: Object.fromEntries(response.headers.entries())
+      });
       throw new Error(ERROR_TYPES.API_ERROR);
     }
 
@@ -253,7 +269,11 @@ export async function POST(request: NextRequest) {
     return successResponse;
 
   } catch (error) {
-    logger.error('Signup API error', error);
+    logger.error('Signup API error', { 
+      error: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined,
+      details: JSON.stringify(error, Object.getOwnPropertyNames(error))
+    });
 
     // Handle different error types
     if (error instanceof Error) {

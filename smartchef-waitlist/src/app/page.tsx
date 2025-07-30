@@ -50,7 +50,6 @@ import {
 import { validateEmailForUI, validateSchoolForUI } from '../lib/validation';
 
 // Lazy load non-critical components for better performance
-const LazyTestimonialSection = lazy(() => import('./components/TestimonialSection'));
 const LazyTargetAudienceSection = lazy(() => import('./components/TargetAudienceSection'));
 
 /**
@@ -484,20 +483,17 @@ export default function SavrLandingPage() {
   };
 
   /**
-   * Smooth scroll to signup section with analytics tracking
+   * Analytics tracking helper for CTA clicks
    * 
-   * Handles navigation to the signup form while tracking the user's
-   * journey through different call-to-action points on the page.
+   * Handles tracking of call-to-action button clicks throughout the page.
+   * Since the signup form is now in the header, we don't need to scroll.
    * 
    * @param {string} buttonName - Identifier for analytics tracking
    * @param {string} section - Section where the CTA was clicked
    */
-  const scrollToSignup = (buttonName = 'join_waitlist_hero', section = 'hero') => {
+  const handleCTAClick = (buttonName = 'join_waitlist_hero', section = 'hero') => {
     // Track CTA click event for conversion analysis
     trackCTAClick(buttonName, section);
-    
-    // Smooth scroll to signup form for better user experience
-    document.getElementById('signup')?.scrollIntoView({ behavior: 'smooth' });
   };
 
   return (
@@ -588,7 +584,7 @@ export default function SavrLandingPage() {
 
       <div className="relative z-10">
         {/* Enhanced Hero Section with Advanced Animations */}
-        <section className="min-h-screen flex items-center justify-center px-4 py-8 sm:py-12 relative">
+        <section className="min-h-screen flex items-center justify-center px-4 py-8 sm:py-12 pt-40 sm:pt-64 relative">
           <div className="max-w-6xl mx-auto text-center">
             {/* Header with Logo and Brand Name */}
             <motion.div
@@ -745,41 +741,123 @@ export default function SavrLandingPage() {
                 Contextual Culinary Intelligence
               </motion.div>
 
-              {/* CTA Button with Enhanced Hover Effects */}
+              {/* Waitlist Form in Header */}
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 2.4 }}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className="mb-8 sm:mb-12"
+                className="mb-8 sm:mb-12 max-w-md mx-auto"
               >
-                <motion.button 
-                  onClick={() => scrollToSignup('join_waitlist_hero', 'hero')}
-                  className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold text-lg sm:text-xl px-8 sm:px-12 py-4 sm:py-6 rounded-2xl w-full sm:w-auto shadow-2xl shadow-purple-500/25 border-0 backdrop-blur-sm transition-all duration-300 inline-flex items-center justify-center relative overflow-hidden"
-                  whileHover={{
-                    boxShadow: "0 25px 50px -12px rgba(168, 85, 247, 0.4)"
-                  }}
-                >
-                  <motion.div
-                    className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0"
-                    initial={{ x: "-100%" }}
-                    whileHover={{ x: "100%" }}
-                    transition={{ duration: 0.6 }}
-                  />
-                  <span className="relative z-10">Join the Waitlist</span>
-                  <motion.div
-                    className="relative z-10 ml-2 sm:ml-3"
-                    animate={{ x: [0, 5, 0] }}
-                    transition={{ 
-                      duration: 2,
-                      repeat: Infinity,
-                      ease: "easeInOut"
-                    }}
-                  >
-                    <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6" />
-                  </motion.div>
-                </motion.button>
+                <div className="bg-white/5 border border-white/10 backdrop-blur-xl rounded-3xl p-6 sm:p-8 shadow-2xl">
+                  <form onSubmit={handleSubmit} data-signup-form className="space-y-4 sm:space-y-6">
+                    {/* Email Input */}
+                    <div>
+                      <input
+                        type="email"
+                        name="email"
+                        placeholder="Enter your email"
+                        value={signupForm.email}
+                        onChange={handleEmailChange}
+                        className={`w-full px-4 sm:px-6 py-3 sm:py-4 bg-white/10 border rounded-2xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:border-transparent text-base sm:text-lg backdrop-blur-sm transition-colors duration-200 ${
+                          validationErrors.email 
+                            ? 'border-red-500 focus:ring-red-500' 
+                            : 'border-white/20 focus:ring-purple-500'
+                        }`}
+                        disabled={signupForm.isLoading}
+                        aria-invalid={!!validationErrors.email}
+                        aria-describedby={validationErrors.email ? 'email-error' : undefined}
+                      />
+                      {validationErrors.email && (
+                        <motion.p
+                          id="email-error"
+                          initial={{ opacity: 0, y: -10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          className="mt-2 text-red-400 text-sm font-medium"
+                        >
+                          {validationErrors.email}
+                        </motion.p>
+                      )}
+                    </div>
+                    
+                    {/* School Input */}
+                    <div>
+                      <input
+                        type="text"
+                        name="school"
+                        placeholder="School (optional)"
+                        value={signupForm.school}
+                        onChange={handleSchoolChange}
+                        className={`w-full px-4 sm:px-6 py-3 sm:py-4 bg-white/10 border rounded-2xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:border-transparent text-base sm:text-lg backdrop-blur-sm transition-colors duration-200 ${
+                          validationErrors.school 
+                            ? 'border-red-500 focus:ring-red-500' 
+                            : 'border-white/20 focus:ring-purple-500'
+                        }`}
+                        disabled={signupForm.isLoading}
+                        aria-invalid={!!validationErrors.school}
+                        aria-describedby={validationErrors.school ? 'school-error' : undefined}
+                      />
+                      {validationErrors.school && (
+                        <motion.p
+                          id="school-error"
+                          initial={{ opacity: 0, y: -10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          className="mt-2 text-red-400 text-sm font-medium"
+                        >
+                          {validationErrors.school}
+                        </motion.p>
+                      )}
+                    </div>
+                    
+                    {/* General Error Display */}
+                    {signupForm.error && (
+                      <div className="bg-red-500/10 border border-red-500/20 rounded-2xl p-4 text-red-400 text-sm font-medium">
+                        {signupForm.error}
+                      </div>
+                    )}
+                    
+                    {/* Success Message */}
+                    {signupForm.isSubmitted && (
+                      <div className="bg-green-500/10 border border-green-500/20 rounded-2xl p-4 text-green-400 text-sm font-medium text-center">
+                        ✨ Welcome to the waitlist! You&apos;ll be the first to know when Savr is ready.
+                      </div>
+                    )}
+                    
+                    {/* Submit Button */}
+                    <button
+                      type="submit"
+                      onClick={() => trackCTAClick('join_waitlist_header', 'hero')}
+                      disabled={signupForm.isLoading || signupForm.isSubmitted}
+                      className={`w-full font-semibold text-lg sm:text-xl px-8 py-4 sm:py-6 rounded-2xl shadow-2xl border-0 backdrop-blur-sm transition-all duration-300 relative overflow-hidden ${
+                        signupForm.isSubmitted
+                          ? 'bg-gradient-to-r from-green-600 to-emerald-600 text-white cursor-default'
+                          : signupForm.isLoading
+                          ? 'bg-gradient-to-r from-gray-600 to-gray-700 text-white cursor-not-allowed'
+                          : 'bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white cursor-pointer shadow-purple-500/25'
+                      }`}
+                    >
+                      <span className="relative z-10 flex items-center justify-center gap-2">
+                        {signupForm.isLoading && (
+                          <>
+                            <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                            Joining...
+                          </>
+                        )}
+                        {signupForm.isSubmitted && (
+                          <>
+                            <span>✨</span>
+                            Welcome to the waitlist!
+                          </>
+                        )}
+                        {!signupForm.isLoading && !signupForm.isSubmitted && (
+                          <>
+                            Join the Waitlist
+                            <ArrowRight className="w-5 h-5" />
+                          </>
+                        )}
+                      </span>
+                    </button>
+                  </form>
+                </div>
               </motion.div>
 
             {/* Stats with Staggered Entrance */}
@@ -1251,7 +1329,7 @@ export default function SavrLandingPage() {
               </div>
 
               <button 
-                onClick={() => scrollToSignup('join_challenge', '30_day_challenge')}
+                onClick={() => handleCTAClick('join_challenge', '30_day_challenge')}
                 className="bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 text-white font-semibold text-lg sm:text-xl px-8 sm:px-12 py-4 sm:py-6 rounded-2xl w-full sm:w-auto shadow-2xl shadow-red-500/25 border-0 backdrop-blur-sm transition-all duration-300 inline-flex items-center justify-center"
               >
                 Join the Challenge
@@ -1269,154 +1347,6 @@ export default function SavrLandingPage() {
         }>
           <LazyTargetAudienceSection />
         </Suspense>
-
-        {/* Testimonials - Lazy Loaded */}
-        <Suspense fallback={
-          <div className="py-16 sm:py-24 px-4 flex items-center justify-center bg-gradient-to-b from-transparent via-white/5 to-transparent">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-400"></div>
-          </div>
-        }>
-          <LazyTestimonialSection />
-        </Suspense>
-
-        {/* Signup Form */}
-        <section id="signup" className="py-16 sm:py-24 lg:py-32 px-4">
-          <div className="max-w-3xl mx-auto text-center">
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              viewport={{ once: true }}
-            >
-              <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-6xl font-black mb-6 sm:mb-8 tracking-tight px-2">
-                ✨ Be the first to cook{' '}
-                <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-                  emotionally intelligent
-                </span>{' '}
-                meals
-              </h2>
-              
-              <p className="text-gray-400 text-base sm:text-lg md:text-xl mb-3 sm:mb-4 font-light">
-                Savr is free to try. No login required.
-              </p>
-              <p className="text-white text-lg sm:text-xl md:text-2xl mb-8 sm:mb-12 font-medium">
-                One prompt in, one perfect meal out.
-              </p>
-
-              <div className="bg-white/5 border border-white/10 backdrop-blur-xl rounded-3xl p-6 sm:p-8 shadow-2xl">
-                <form onSubmit={handleSubmit} data-signup-form className="space-y-4 sm:space-y-6">
-                  {/* Email Input */}
-                  <div>
-                    <input
-                      type="email"
-                      name="email"
-                      placeholder="Enter your email"
-                      value={signupForm.email}
-                      onChange={handleEmailChange}
-                      className={`w-full px-4 sm:px-6 py-3 sm:py-4 bg-white/10 border rounded-2xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:border-transparent text-base sm:text-lg backdrop-blur-sm transition-colors duration-200 ${
-                        validationErrors.email 
-                          ? 'border-red-500 focus:ring-red-500' 
-                          : 'border-white/20 focus:ring-purple-500'
-                      }`}
-                      disabled={signupForm.isLoading}
-                      aria-invalid={!!validationErrors.email}
-                      aria-describedby={validationErrors.email ? 'email-error' : undefined}
-                    />
-                    {validationErrors.email && (
-                      <motion.p
-                        id="email-error"
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="mt-2 text-red-400 text-sm font-medium"
-                      >
-                        {validationErrors.email}
-                      </motion.p>
-                    )}
-                  </div>
-                  
-                  {/* School Input */}
-                  <div>
-                    <input
-                      type="text"
-                      name="school"
-                      placeholder="School (optional)"
-                      value={signupForm.school}
-                      onChange={handleSchoolChange}
-                      className={`w-full px-4 sm:px-6 py-3 sm:py-4 bg-white/10 border rounded-2xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:border-transparent text-base sm:text-lg backdrop-blur-sm transition-colors duration-200 ${
-                        validationErrors.school 
-                          ? 'border-red-500 focus:ring-red-500' 
-                          : 'border-white/20 focus:ring-purple-500'
-                      }`}
-                      disabled={signupForm.isLoading}
-                      aria-invalid={!!validationErrors.school}
-                      aria-describedby={validationErrors.school ? 'school-error' : undefined}
-                    />
-                    {validationErrors.school && (
-                      <motion.p
-                        id="school-error"
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="mt-2 text-red-400 text-sm font-medium"
-                      >
-                        {validationErrors.school}
-                      </motion.p>
-                    )}
-                  </div>
-                  
-                  {/* General Error Display */}
-                  {/* Error Message */}
-                  {signupForm.error && (
-                    <div className="bg-red-500/10 border border-red-500/20 rounded-2xl p-4 text-red-400 text-sm font-medium">
-                      {signupForm.error}
-                    </div>
-                  )}
-                  
-                  {/* Success Message */}
-                  {signupForm.isSubmitted && (
-                    <div className="bg-green-500/10 border border-green-500/20 rounded-2xl p-4 text-green-400 text-sm font-medium text-center">
-                      ✨ Welcome to the waitlist! You&apos;ll be the first to know when Savr is ready.
-                    </div>
-                  )}
-                  
-                  {/* Submit Button */}
-                  <button
-                    type="submit"
-                    onClick={() => trackCTAClick('join_waitlist_form', 'signup_form')}
-                    disabled={signupForm.isLoading || signupForm.isSubmitted}
-                    className={`w-full font-semibold text-lg sm:text-xl px-8 py-4 sm:py-6 rounded-2xl shadow-2xl border-0 backdrop-blur-sm transition-all duration-300 relative overflow-hidden ${
-                      signupForm.isSubmitted
-                        ? 'bg-gradient-to-r from-green-600 to-emerald-600 text-white cursor-default'
-                        : signupForm.isLoading
-                        ? 'bg-gradient-to-r from-gray-600 to-gray-700 text-white cursor-not-allowed'
-                        : 'bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white cursor-pointer shadow-purple-500/25'
-                    }`}
-                  >
-                    <span className="relative z-10 flex items-center justify-center gap-2">
-                      {signupForm.isLoading && (
-                        <>
-                          <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                          Joining...
-                        </>
-                      )}
-                      {signupForm.isSubmitted && (
-                        <>
-                          <span>✨</span>
-                          Welcome to the waitlist!
-                        </>
-                      )}
-                      {!signupForm.isLoading && !signupForm.isSubmitted && (
-                        <>
-                          Join the Waitlist
-                          <ArrowRight className="w-5 h-5" />
-                        </>
-                      )}
-                    </span>
-                  </button>
-                </form>
-              </div>
-            </motion.div>
-          </div>
-        </section>
 
         {/* Footer */}
         <footer className="py-8 sm:py-12 px-4 border-t border-white/10">

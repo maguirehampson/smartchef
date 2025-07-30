@@ -38,13 +38,7 @@ interface SignupRequest {
 }
 
 // MailerLite API interfaces
-interface MailerLiteSubscriber {
-  email: string;
-  fields?: {
-    school?: string;
-  };
-  groups?: string[];
-}
+
 
 interface MailerLiteResponse {
   data: {
@@ -246,7 +240,7 @@ export async function POST(request: NextRequest) {
     });
 
     // Create success response - handle different response formats
-    const subscriberId = response.data?.id || response.id || 'unknown';
+    const subscriberId = response.data?.id || 'unknown';
     const successResponse = NextResponse.json({
       success: true,
       message: 'Successfully added to waitlist',

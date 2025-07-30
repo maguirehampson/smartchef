@@ -10,7 +10,7 @@
  * - Optimized animations with reduced motion support
  * - Efficient rendering with React.memo
  * 
- * @author SmartChef Team
+ * @author Savr Team
  * @version 1.0.0
  */
 
@@ -81,7 +81,7 @@ const TargetAudienceSection: React.FC = React.memo(() => {
             Made For Real People
           </h2>
           <p className="text-lg sm:text-xl text-gray-300 max-w-3xl mx-auto">
-            SmartChef understands that everyone&apos;s food journey is different
+                            Savr understands that everyone&apos;s food journey is different
           </p>
         </motion.div>
 

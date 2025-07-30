@@ -10,7 +10,7 @@
  * - Optimized animations with reduced motion support
  * - Efficient rendering with React.memo
  * 
- * @author SmartChef Team
+ * @author Savr Team
  * @version 1.0.0
  */
 
@@ -46,7 +46,7 @@ const testimonials: Testimonial[] = [
     id: "college-student",
     name: "Anonymous User",
     role: "College Student",
-    content: "SmartChef actually understands my $15 weekly grocery budget and my dorm kitchen limitations. Game changer.",
+          content: "Savr actually understands my $15 weekly grocery budget and my dorm kitchen limitations. Game changer.",
     rating: 5
   },
   {

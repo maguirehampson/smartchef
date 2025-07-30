@@ -1,7 +1,7 @@
 /**
- * SmartChef Waitlist Landing Page
- * 
- * This is the main landing page component for the SmartChef waitlist application.
+ * Savr Waitlist Landing Page
+ *
+ * This is the main landing page component for the Savr waitlist application.
  * It provides a comprehensive marketing experience with animated sections, interactive
  * chat demo, email signup form, and analytics tracking.
  * 
@@ -15,7 +15,7 @@
  * - Performance optimized with Next.js best practices
  * 
  * Requirements covered:
- * - 1.1: Complete SmartChef landing page with all sections
+ * - 1.1: Complete Savr landing page with all sections
  * - 1.2: Responsive design for all device sizes
  * - 1.3: Smooth animations and transitions
  * - 1.4: Smooth scroll navigation
@@ -28,7 +28,7 @@
  * - 3.4: Splitbee script inclusion
  * - 5.4: TypeScript for type safety
  * 
- * @author SmartChef Team
+ * @author Savr Team
  * @version 1.0.0
  */
 
@@ -122,9 +122,9 @@ declare global {
 }
 
 /**
- * SmartChef Landing Page Component
- * 
- * Main React component that renders the complete SmartChef waitlist landing page.
+  * Savr Landing Page Component
+ *
+ * Main React component that renders the complete Savr waitlist landing page.
  * Handles user interactions, form submission, analytics tracking, and animated UI elements.
  * 
  * Component Architecture:
@@ -143,7 +143,7 @@ declare global {
  * 
  * @returns {JSX.Element} The complete landing page with all sections
  */
-export default function SmartChefLandingPage() {
+export default function SavrLandingPage() {
   // Configuration constants
   /** Initial signup count displayed in hero section for social proof */
   const initialSignupCount = 2847;
@@ -151,7 +151,7 @@ export default function SmartChefLandingPage() {
   /**
    * Demo message sets for the interactive chat demonstration
    * 
-   * These message sets showcase SmartChef's contextual understanding by
+   * These message sets showcase Savr's contextual understanding by
    * demonstrating different user scenarios and appropriate AI responses.
    * Each set represents a complete conversation flow that highlights
    * the product's ability to understand mood, budget, and context.
@@ -879,7 +879,7 @@ export default function SmartChefLandingPage() {
 
               <div className="bg-white/5 border border-white/10 backdrop-blur-xl rounded-3xl p-6 sm:p-8 mb-8 sm:mb-12">
                 <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-white font-light leading-relaxed">
-                  SmartChef is your <span className="font-semibold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">Contextual Culinary Intelligence</span> copilot —<br className="hidden sm:block" />
+                  Savr is your <span className="font-semibold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">Contextual Culinary Intelligence</span> copilot —<br className="hidden sm:block" />
                   a personalized cooking experience that knows your <em className="text-purple-400">vibe</em>, not just your ingredients.
                 </p>
               </div>
@@ -910,7 +910,7 @@ export default function SmartChefLandingPage() {
                   it&apos;s a question about <span className="text-purple-400 font-medium">mood</span>, <span className="text-pink-400 font-medium">motivation</span>, <span className="text-orange-400 font-medium">money</span>, and <span className="text-blue-400 font-medium">meaning</span>.
                 </p>
                 <p className="text-base sm:text-lg md:text-xl text-white font-medium">
-                  SmartChef looks at your context — not just your fridge — and serves up food that actually fits your day.
+                  Savr looks at your context — not just your fridge — and serves up food that actually fits your day.
                 </p>
               </div>
             </motion.div>
@@ -938,7 +938,7 @@ export default function SmartChefLandingPage() {
               {[
                 {
                   step: "🧠 Step 1",
-                  title: "Tell SmartChef how you're feeling",
+                  title: "Tell Savr how you're feeling",
                   description: "\"It's Sunday, I'm hungover, I've got $10 and no energy.\"",
                   icon: <Brain className="w-6 h-6 sm:w-8 sm:h-8" />
                 },
@@ -951,7 +951,7 @@ export default function SmartChefLandingPage() {
                 {
                   step: "📦 Step 3",
                   title: "Grocery list? Sorted. Leftovers? Optimized.",
-                  description: "SmartChef helps you stretch your pantry, not your wallet.",
+                  description: "Savr helps you stretch your pantry, not your wallet.",
                   icon: <Zap className="w-6 h-6 sm:w-8 sm:h-8" />
                 }
               ].map((item, index) => (
@@ -990,7 +990,7 @@ export default function SmartChefLandingPage() {
                     <Brain className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                   </div>
                   <div>
-                    <h3 className="text-white font-semibold text-sm sm:text-base">SmartChef</h3>
+                    <h3 className="text-white font-semibold text-sm sm:text-base">Savr</h3>
                     <p className="text-purple-300 text-xs sm:text-sm">Your Contextual Culinary Intelligence</p>
                   </div>
                   <div className="ml-auto flex items-center gap-1">
@@ -1048,7 +1048,7 @@ export default function SmartChefLandingPage() {
                                   >
                                     <Brain className="w-2 h-2 sm:w-3 sm:h-3 text-white" />
                                   </motion.div>
-                                  <span className="text-xs sm:text-sm text-purple-400 font-medium">SmartChef</span>
+                                  <span className="text-xs sm:text-sm text-purple-400 font-medium">Savr</span>
                                 </div>
                               )}
                               <motion.div
@@ -1088,7 +1088,7 @@ export default function SmartChefLandingPage() {
                                 <div className="w-5 h-5 sm:w-6 sm:h-6 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full flex items-center justify-center">
                                   <Brain className="w-2 h-2 sm:w-3 sm:h-3 text-white" />
                                 </div>
-                                <span className="text-xs sm:text-sm text-purple-400 font-medium">SmartChef</span>
+                                <span className="text-xs sm:text-sm text-purple-400 font-medium">Savr</span>
                               </div>
                               <div className="flex items-center gap-1">
                                 <div className="flex gap-1">
@@ -1139,7 +1139,7 @@ export default function SmartChefLandingPage() {
                                 <div className="w-5 h-5 sm:w-6 sm:h-6 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full flex items-center justify-center">
                                   <Brain className="w-2 h-2 sm:w-3 sm:h-3 text-white" />
                                 </div>
-                                <span className="text-xs sm:text-sm text-purple-400 font-medium">SmartChef</span>
+                                <span className="text-xs sm:text-sm text-purple-400 font-medium">Savr</span>
                               </div>
                             )}
                             {msg.text}
@@ -1155,7 +1155,7 @@ export default function SmartChefLandingPage() {
               <div className="border-t border-white/10 p-4 sm:p-6">
                 <div className="flex items-center gap-3">
                   <div className="flex-1 bg-white/5 border border-white/10 rounded-2xl px-4 py-3">
-                    <span className="text-gray-400 text-sm">Try SmartChef yourself...</span>
+                    <span className="text-gray-400 text-sm">Try Savr yourself...</span>
                   </div>
                   <motion.button
                     className="bg-gradient-to-r from-purple-500 to-pink-600 p-3 rounded-xl shadow-lg"
@@ -1187,7 +1187,7 @@ export default function SmartChefLandingPage() {
               </h3>
 
               <div className="bg-white/5 border border-white/10 backdrop-blur-xl rounded-3xl p-6 sm:p-8 mb-8 sm:mb-16">
-                <h4 className="text-xl sm:text-2xl font-bold mb-6 sm:mb-8 text-white">SmartChef learns:</h4>
+                <h4 className="text-xl sm:text-2xl font-bold mb-6 sm:mb-8 text-white">Savr learns:</h4>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                   {[
                     { text: "Your exam season snacks", icon: "📚", mood: "stressed" },
@@ -1242,7 +1242,7 @@ export default function SmartChefLandingPage() {
 
               <div className="bg-white/5 border border-white/10 backdrop-blur-xl rounded-3xl p-6 sm:p-8 mb-8 sm:mb-12">
                 <p className="text-base sm:text-lg md:text-xl text-white mb-4 sm:mb-6 leading-relaxed">
-                  We&apos;re inviting <span className="font-bold text-pink-400">100 early users</span> to let SmartChef decide their meals for a full month —<br className="hidden sm:block" />
+                  We&apos;re inviting <span className="font-bold text-pink-400">100 early users</span> to let Savr decide their meals for a full month —<br className="hidden sm:block" />
                   based on mood, schedule, budget, and vibe.
                 </p>
                 <p className="text-sm sm:text-base md:text-lg text-gray-300 font-light">
@@ -1297,7 +1297,7 @@ export default function SmartChefLandingPage() {
               </h2>
               
               <p className="text-gray-400 text-base sm:text-lg md:text-xl mb-3 sm:mb-4 font-light">
-                SmartChef is free to try. No login required.
+                Savr is free to try. No login required.
               </p>
               <p className="text-white text-lg sm:text-xl md:text-2xl mb-8 sm:mb-12 font-medium">
                 One prompt in, one perfect meal out.
@@ -1374,7 +1374,7 @@ export default function SmartChefLandingPage() {
                   {/* Success Message */}
                   {signupForm.isSubmitted && (
                     <div className="bg-green-500/10 border border-green-500/20 rounded-2xl p-4 text-green-400 text-sm font-medium text-center">
-                      ✨ Welcome to the waitlist! You&apos;ll be the first to know when SmartChef is ready.
+                      ✨ Welcome to the waitlist! You&apos;ll be the first to know when Savr is ready.
                     </div>
                   )}
                   

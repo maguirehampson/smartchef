@@ -1,7 +1,7 @@
 /**
- * SmartChef Waitlist Root Layout Component
- * 
- * This is the root layout component for the SmartChef waitlist application.
+ * Savr Waitlist Root Layout Component
+ *
+ * This is the root layout component for the Savr waitlist application.
  * It defines the HTML structure, metadata, fonts, and global scripts that
  * are shared across all pages in the application.
  * 
@@ -18,7 +18,7 @@
  * - 6.5: Open Graph and Twitter Card configurations
  * - 5.1: Next.js project structure and configuration
  * 
- * @author SmartChef Team
+ * @author Savr Team
  * @version 1.0.0
  */
 
@@ -125,9 +125,9 @@ export const metadata: Metadata = {
   // Enhanced Open Graph metadata
   openGraph: {
     title: "Savr - AI That Gets Why You Eat",
-    description: "Join the waitlist for SmartChef, the first AI cooking assistant that understands your mood, budget, and cravings. Contextual culinary intelligence for real life.",
+    description: "Join the waitlist for Savr, the first AI cooking assistant that understands your mood, budget, and cravings. Contextual culinary intelligence for real life.",
     url: '/',
-    siteName: 'SmartChef',
+          siteName: 'Savr',
     images: [
       {
         url: '/favicon-v2.ico',
